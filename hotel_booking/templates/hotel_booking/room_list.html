@@ -1,0 +1,26 @@
+{% extends 'hotel_booking/base.html' %}
+
+{% block title %}Номера отеля {{ hotel.name }}{% endblock %}
+
+{% block content %}
+    <h2>Номера в отеле "{{ hotel.name }}"</h2>
+    <ul>
+        {% for room in rooms %}
+            <li>
+                №{{ room.room_number }} — {{ room.get_room_type_display }}<br>
+                Вместимость: {{ room.capacity }} чел.<br>
+                Цена: {{ room.price_per_night }} руб./ночь<br>
+                {% if room.is_available %}
+                    <form action="{% url 'create_booking' room.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="date" name="check_in" required>
+                        <input type="date" name="check_out" required>
+                        <button type="submit">Забронировать</button>
+                    </form>
+                {% else %}
+                    <span style="color:red;">Недоступен</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
