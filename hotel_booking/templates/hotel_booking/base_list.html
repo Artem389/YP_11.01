@@ -1,0 +1,229 @@
+{% extends 'hotel_booking/base.html' %}
+
+{% block content %}
+<div class="content-header">
+    <h2>{{ title }}</h2>
+    {% if create_url %}
+        <a href="{{ create_url }}" class="button">Добавить</a>
+    {% endif %}
+</div>
+
+{% if search_fields %}
+<div class="filters">
+    <form method="get" class="filter-form">
+        <input type="text" name="search" placeholder="Поиск..." value="{{ request.GET.search }}">
+        <button type="submit">Найти</button>
+        {% if request.GET.search %}
+        <a href="?" class="button cancel">Сбросить</a>
+        {% endif %}
+    </form>
+</div>
+{% endif %}
+
+<div class="table-responsive">
+    <table class="data-table">
+        <thead>
+            <tr>
+                {% for header in table_headers %}
+                <th>{{ header }}</th>
+                {% endfor %}
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in page_obj %}
+            <tr>
+                {% if model_name == 'Hotel' %}
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.address|truncatechars:50 }}</td>
+                    <td>{{ item.stars }}</td>
+                    <td>{% if item.avg_rating %}{{ item.avg_rating|floatformat:1 }}{% else %}Нет{% endif %}</td>
+                {% elif model_name == 'Room' %}
+                    <td>{{ item.hotel.name }}</td>
+                    <td>{{ item.room_number }}</td>
+                    <td>{{ item.get_room_type_display }}</td>
+                    <td>{{ item.price_per_night }} руб.</td>
+                    <td>{{ item.capacity }} чел.</td>
+                {% elif model_name == 'Guest' %}
+                    <td>{{ item.user.username }}</td>
+                    <td>{{ item.phone|default:"-" }}</td>
+                    <td>{{ item.passport_number|default:"-" }}</td>
+                    <td>{{ item.loyalty_points }}</td>
+                    <td>{{ item.registration_date|date:"d.m.Y" }}</td>
+                {% elif model_name == 'Service' %}
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.price }} руб.</td>
+                    <td>{% if item.is_active %}Да{% else %}Нет{% endif %}</td>
+                    <td>{{ item.hotels.count }}</td>
+                {% elif model_name == 'Booking' %}
+                    <td>{{ item.guest.user.username }}</td>
+                    <td>{{ item.room.hotel.name }}</td>
+                    <td>{{ item.room.room_number }}</td>
+                    <td>{{ item.check_in_date|date:"d.m.Y" }} - {{ item.check_out_date|date:"d.m.Y" }}</td>
+                    <td>{{ item.total_price }} руб.</td>
+                    <td>{{ item.get_status_display }}</td>
+                {{% elif model_name == 'Review' %}
+                    <td>{{ item.hotel.name }}</td>
+                    <td>{{ item.guest.user.username }}</td>
+                    <td>{{ item.rating }}</td>
+                    <td>{{ item.comment|truncatechars:50 }}</td>
+                    <td>{% if item.is_verified %}Подтвержден{% else %}На модерации{% endif %}</td>
+                {% elif model_name == 'Payment' %}
+                    <td><a href="{% url 'booking_detail' item.booking.id %}">#{{ item.booking.id }}</a></td>
+                    <td>{{ item.booking.guest.user.username }}</td>
+                    <td>{{ item.amount }} руб.</td>
+                    <td>{{ item.get_payment_method_display }}</td>
+                    <td>{{ item.get_status_display }}</td>
+                    <td>{{ item.payment_date|date:"d.m.Y"|default:"-" }}</td>
+                {% endif %}
+                <td class="actions">
+                    {% if detail_url_name %}
+                        <a href="{% url detail_url_name item.id %}">Просмотр</a>
+                    {% endif %}
+                    {% if update_url_name %}
+                        <a href="{% url update_url_name item.id %}">Редактировать</a>
+                    {% endif %}
+                    {% if delete_url_name %}
+                        {% if model_name == 'Room' and item.get_active_bookings_count > 0 %}
+                            <span class="disabled-link" title="Невозможно удалить: есть активные бронирования">Удалить</span>
+                        {% elif model_name == 'Hotel' and item.rooms.exists %}
+                            <span class="disabled-link" title="Невозможно удалить: есть номера">Удалить</span>
+                        {% else %}
+                            <a href="{% url delete_url_name item.id %}" class="delete-link">Удалить</a>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="{{ table_headers|length|add:1 }}" class="empty-message">Нет данных</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if page_obj.has_other_pages %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Первая</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Предыдущая</a>
+    {% endif %}
+
+    <span class="current-page">
+        Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Следующая</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Последняя</a>
+    {% endif %}
+</div>
+{% endif %}
+
+<style>
+    .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .filters {
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+    }
+    .filter-form {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    .filter-form input {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .data-table th,
+    .data-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    .data-table th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+    .data-table tr:hover {
+        background-color: #f5f5f5;
+    }
+    .actions {
+        white-space: nowrap;
+    }
+    .actions a {
+        margin-right: 10px;
+        color: #007bff;
+        text-decoration: none;
+    }
+    .actions a.delete-link {
+        color: #dc3545;
+    }
+    .empty-message {
+        text-align: center;
+        color: #666;
+        padding: 40px;
+    }
+    .button {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .button:hover {
+        background-color: #0056b3;
+    }
+    .button.cancel {
+        background-color: #6c757d;
+    }
+    .pagination {
+        margin-top: 20px;
+        text-align: center;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .pagination a {
+        padding: 6px 12px;
+        background-color: #f8f9fa;
+        color: #007bff;
+        text-decoration: none;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+    }
+    .pagination a:hover {
+        background-color: #e9ecef;
+    }
+    .current-page {
+        padding: 6px 12px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 4px;
+    }
+
+    .disabled-link {
+    color: #ccc;
+    cursor: not-allowed;
+}
+</style>
+{% endblock %}

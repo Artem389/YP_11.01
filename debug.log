@@ -1,0 +1,320 @@
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 7156
+"GET /rooms/ HTTP/1.1" 200 15964
+"GET / HTTP/1.1" 200 7156
+"GET /hotels/ HTTP/1.1" 200 9880
+"GET /hotels/5/delete/ HTTP/1.1" 200 3892
+Internal Server Error: /hotels/5/delete/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\My_file\Python\Lib\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+  File "E:\My_file\Python\Lib\django\views\generic\edit.py", line 258, in post
+    return self.form_valid(form)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "E:\My_file\Python\Lib\django\views\generic\edit.py", line 264, in form_valid
+    self.object.delete()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "E:\My_file\Python\Lib\django\db\models\base.py", line 1280, in delete
+    collector.collect([self], keep_parents=keep_parents)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\db\models\deletion.py", line 350, in collect
+    raise ProtectedError(
+    ...<7 lines>...
+    )
+django.db.models.deletion.ProtectedError: ("Cannot delete some instances of model 'Hotel' because they are referenced through protected foreign keys: 'Room.hotel'.", {<Booking: Бронь elena_volkova - Отель Казань - Номер 1 (Стандарт) (2024-02-25 - 2024-02-28)>})
+"POST /hotels/5/delete/ HTTP/1.1" 500 105988
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 7156
+"GET /hotels/ HTTP/1.1" 200 9880
+"GET /hotels/5/delete/ HTTP/1.1" 200 3884
+"GET /hotels/7/delete/ HTTP/1.1" 200 3911
+"POST /hotels/7/delete/ HTTP/1.1" 302 0
+"GET /hotels/ HTTP/1.1" 200 9444
+"GET /hotels/create/ HTTP/1.1" 200 6846
+"POST /hotels/create/ HTTP/1.1" 302 0
+"GET /hotels/ HTTP/1.1" 200 10067
+Watching for file changes with StatReloader
+"GET /hotels/?search=%D0%B0%D0%BD%D0%B0%D0%BF%D0%B0 HTTP/1.1" 200 5907
+"GET /hotels/? HTTP/1.1" 200 9880
+"GET /hotels/8/update/ HTTP/1.1" 200 6950
+"POST /hotels/8/update/ HTTP/1.1" 302 0
+"GET /hotels/ HTTP/1.1" 200 10071
+"GET / HTTP/1.1" 200 7156
+"GET /hotels/ HTTP/1.1" 200 9880
+"GET /rooms/ HTTP/1.1" 200 15964
+"GET /rooms/create/ HTTP/1.1" 200 8276
+"POST /rooms/create/ HTTP/1.1" 302 0
+"GET /rooms/ HTTP/1.1" 200 16141
+"GET /rooms/24/update/ HTTP/1.1" 200 8335
+"GET /rooms/ HTTP/1.1" 200 15954
+"GET /rooms/24/ HTTP/1.1" 200 3127
+"GET /rooms/ HTTP/1.1" 200 15954
+"GET /rooms/24/update/ HTTP/1.1" 200 8335
+"POST /rooms/24/update/ HTTP/1.1" 302 0
+"GET /rooms/ HTTP/1.1" 200 16145
+"GET /rooms/24/update/ HTTP/1.1" 200 8343
+"GET /rooms/ HTTP/1.1" 200 15954
+"GET /rooms/24/ HTTP/1.1" 200 3154
+"GET /rooms/ HTTP/1.1" 200 15954
+"GET /rooms/14/delete/ HTTP/1.1" 200 3973
+Internal Server Error: /rooms/14/delete/
+Traceback (most recent call last):
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 130, in delete
+    self.object.delete()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "E:\My_file\Python\Lib\django\db\models\base.py", line 1280, in delete
+    collector.collect([self], keep_parents=keep_parents)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\db\models\deletion.py", line 350, in collect
+    raise ProtectedError(
+    ...<7 lines>...
+    )
+django.db.models.deletion.ProtectedError: ("Cannot delete some instances of model 'Room' because they are referenced through protected foreign keys: 'Booking.room'.", {<Booking: Бронь elena_volkova - Бизнес Отель Екатеринбург - Номер 101 (Стандарт) (2024-02-01 - 2024-02-03)>})
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\My_file\Python\Lib\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 382, in post
+    return self.delete(request, *args, **kwargs)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 136, in delete
+    objects_list = ', '.join([str(obj) for obj in protected_objects[:5]])
+                                                  ~~~~~~~~~~~~~~~~~^^^^
+TypeError: 'set' object is not subscriptable
+"POST /rooms/14/delete/ HTTP/1.1" 500 112073
+Watching for file changes with StatReloader
+"GET /rooms/14/delete/ HTTP/1.1" 200 5633
+"POST /rooms/14/delete/ HTTP/1.1" 302 0
+"GET /rooms/14/ HTTP/1.1" 200 3742
+Watching for file changes with StatReloader
+"GET /rooms/14/delete/ HTTP/1.1" 200 5509
+Watching for file changes with StatReloader
+"GET /rooms/14/delete/ HTTP/1.1" 200 5519
+"GET /rooms/14/ HTTP/1.1" 200 3236
+"GET /rooms/ HTTP/1.1" 200 18645
+"GET /rooms/ HTTP/1.1" 200 18645
+"GET /hotels/ HTTP/1.1" 200 9946
+"GET /rooms/ HTTP/1.1" 200 18645
+"GET /guests/ HTTP/1.1" 200 8018
+"GET /guests/create/ HTTP/1.1" 200 5580
+"POST /guests/create/ HTTP/1.1" 302 0
+"GET /guests/ HTTP/1.1" 200 8859
+"GET /guests/5/ HTTP/1.1" 200 3640
+"GET /guests/5/update/ HTTP/1.1" 200 5641
+"POST /guests/5/update/ HTTP/1.1" 302 0
+"GET /guests/ HTTP/1.1" 200 8863
+"GET /guests/5/ HTTP/1.1" 200 3639
+"GET /guests/5/delete/ HTTP/1.1" 200 3954
+"POST /guests/5/delete/ HTTP/1.1" 302 0
+"GET /guests/ HTTP/1.1" 200 8018
+"GET /guests/create/ HTTP/1.1" 200 5580
+"POST /guests/create/ HTTP/1.1" 302 0
+"GET /guests/ HTTP/1.1" 200 8864
+"GET /guests/6/delete/ HTTP/1.1" 200 3954
+"GET /guests/ HTTP/1.1" 200 8677
+"GET /guests/3/delete/ HTTP/1.1" 200 3942
+"GET /guests/ HTTP/1.1" 200 8677
+"GET /services/ HTTP/1.1" 200 11788
+"GET /services/create/ HTTP/1.1" 200 6086
+"POST /services/create/ HTTP/1.1" 302 0
+"GET /services/ HTTP/1.1" 200 12615
+"GET /services/11/update/ HTTP/1.1" 200 6157
+"POST /services/11/update/ HTTP/1.1" 302 0
+"GET /services/ HTTP/1.1" 200 12623
+"GET /services/11/ HTTP/1.1" 200 2866
+"GET /services/11/delete/ HTTP/1.1" 200 3792
+"POST /services/11/delete/ HTTP/1.1" 302 0
+"GET /services/ HTTP/1.1" 200 11788
+"GET /services/create/ HTTP/1.1" 200 6086
+"POST /services/create/ HTTP/1.1" 302 0
+"GET /services/ HTTP/1.1" 200 12620
+"GET /bookings/ HTTP/1.1" 200 13108
+"GET /bookings/create/ HTTP/1.1" 200 8991
+"POST /bookings/create/ HTTP/1.1" 200 9703
+"POST /bookings/create/ HTTP/1.1" 302 0
+"GET /bookings/ HTTP/1.1" 200 14065
+"GET /bookings/11/update/ HTTP/1.1" 200 9062
+"GET /bookings/ HTTP/1.1" 200 13864
+"GET /reviews/ HTTP/1.1" 200 11319
+"GET /services/ HTTP/1.1" 200 12431
+"GET /bookings/ HTTP/1.1" 200 13864
+"GET /reviews/ HTTP/1.1" 200 11319
+Internal Server Error: /reviews/6/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "E:\My_file\Python\Lib\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "E:\My_file\Python\Lib\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "E:\My_file\Python\Lib\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'booking_detail' with arguments '('',)' not found. 1 pattern(s) tried: ['bookings/(?P<pk>[0-9]+)/\\Z']
+"GET /reviews/6/ HTTP/1.1" 500 171240
+"GET /reviews/6/update/ HTTP/1.1" 200 5790
+"POST /reviews/6/update/ HTTP/1.1" 302 0
+"GET /reviews/ HTTP/1.1" 200 11515
+"GET /reviews/6/delete/ HTTP/1.1" 200 3839
+"POST /reviews/6/delete/ HTTP/1.1" 302 0
+"GET /reviews/ HTTP/1.1" 200 10549
+"GET /bookings/ HTTP/1.1" 200 13864
+"GET /bookings/10/delete/ HTTP/1.1" 200 3772
+"POST /bookings/10/delete/ HTTP/1.1" 302 0
+"GET /bookings/ HTTP/1.1" 200 14045
+"GET /reviews/ HTTP/1.1" 200 10549
+"GET /payments/ HTTP/1.1" 200 11437
+"GET /payments/8/ HTTP/1.1" 200 4617
+"GET /payments/ HTTP/1.1" 200 11437
+"GET /payments/8/update/ HTTP/1.1" 200 5515
+"POST /payments/8/update/ HTTP/1.1" 302 0
+"GET /payments/ HTTP/1.1" 200 11641
+"GET /payments/8/delete/ HTTP/1.1" 200 3807
+"POST /payments/8/delete/ HTTP/1.1" 302 0
+"GET /payments/ HTTP/1.1" 200 10666
+"GET /reviews/ HTTP/1.1" 200 10549
+Internal Server Error: /reviews/7/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "E:\My_file\Python\Lib\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "E:\My_file\Python\Lib\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "E:\My_file\Python\Lib\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'booking_detail' with arguments '('',)' not found. 1 pattern(s) tried: ['bookings/(?P<pk>[0-9]+)/\\Z']
+"GET /reviews/7/ HTTP/1.1" 500 171128
+Watching for file changes with StatReloader
+"GET /rooms/ HTTP/1.1" 200 18994
+"GET /bookings/ HTTP/1.1" 200 13850
+"GET /bookings/11/update/ HTTP/1.1" 200 9842
+"POST /bookings/11/update/ HTTP/1.1" 302 0
+"GET /bookings/ HTTP/1.1" 200 14060
+"GET /reviews/ HTTP/1.1" 200 10549
+"GET /reviews/7/ HTTP/1.1" 200 5785
+"GET /hotels/1/ HTTP/1.1" 200 3154
+"GET /hotels/ HTTP/1.1" 200 9949
+"GET /reviews/ HTTP/1.1" 200 10549
+"GET /reviews/7/ HTTP/1.1" 200 5785
+"GET /reviews/7/update/ HTTP/1.1" 200 5917
+"POST /reviews/7/update/ HTTP/1.1" 302 0
+"GET /reviews/ HTTP/1.1" 200 10743
+"GET /reviews/7/ HTTP/1.1" 200 5788
+Watching for file changes with StatReloader
+"GET /rooms/ HTTP/1.1" 200 16020
+"GET /rooms/ HTTP/1.1" 200 16020
+Watching for file changes with StatReloader
+"GET /rooms/ HTTP/1.1" 200 17773
+"GET /bookings/ HTTP/1.1" 200 14790
+"GET /services/ HTTP/1.1" 200 13366
+"GET /guests/ HTTP/1.1" 200 9102
+"GET /rooms/ HTTP/1.1" 200 17773
+"GET / HTTP/1.1" 200 7156
+"GET /rooms/ HTTP/1.1" 200 17773
+"GET /bookings/create/ HTTP/1.1" 200 9771
+"GET /bookings/ HTTP/1.1" 200 14790
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 7156
+"GET /hotels/2/ HTTP/1.1" 200 3151

@@ -1,0 +1,68 @@
+{% load hotel_tags %}
+
+{% if page_obj and page_obj.paginator.num_pages > 1 %}
+<div class="pagination-container">
+    <div class="pagination-info">
+        Показано с {{ page_obj.start_index }} по {{ page_obj.end_index }} из {{ page_obj.paginator.count }} записей
+    </div>
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1&{{ request.GET.urlencode }}" class="page-link">Первая</a>
+            <a href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}" class="page-link">Предыдущая</a>
+        {% endif %}
+
+        <span class="current-page">
+            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}" class="page-link">Следующая</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}&{{ request.GET.urlencode }}" class="page-link">Последняя</a>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .pagination-container {
+        margin-top: 30px;
+        padding: 20px 0;
+        border-top: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    .pagination-info {
+        color: #666;
+        font-size: 14px;
+    }
+    .pagination {
+        display: flex;
+        gap: 10px;
+    }
+    .page-link {
+        padding: 6px 12px;
+        background-color: #f8f9fa;
+        color: #007bff;
+        text-decoration: none;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+    }
+    .page-link:hover {
+        background-color: #e9ecef;
+    }
+    .current-page {
+        padding: 6px 12px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 4px;
+    }
+    @media (max-width: 768px) {
+        .pagination-container {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+</style>
+{% endif %}
