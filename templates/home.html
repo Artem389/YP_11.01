@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="text-center">
+    <h1>Добро пожаловать в ОтельБук!</h1>
+    <p class="lead">Найдите идеальный отель для вашего отдыха</p>
+    <a href="{% url 'hotel_search' %}" class="btn btn-primary btn-lg">Найти отель</a>
+</div>
+{% endblock %}

@@ -2,23 +2,142 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from .models import Hotel, Room, Guest, Service, Booking, Review, Payment
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.models import User
+from django import forms
+from .models import Guest, Favorite
+
+
+class RegisterForm(UserCreationForm):
+    """Форма регистрации"""
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    phone = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+
+        if commit:
+            user.save()
+            # Создаем профиль гостя
+            Guest.objects.create(
+                user=user,
+                phone=self.cleaned_data['phone']
+            )
+        return user
+
+
+class LoginForm(AuthenticationForm):
+    """Форма авторизации"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Имя пользователя'})
+        self.fields['password'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Пароль'})
+
+
+class UserProfileForm(forms.ModelForm):
+    """Форма редактирования профиля"""
+    first_name = forms.CharField(max_length=30, required=True)
+    last_name = forms.CharField(max_length=30, required=True)
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})
+
+
+class GuestProfileForm(forms.ModelForm):
+    """Форма редактирования профиля гостя"""
+
+    class Meta:
+        model = Guest
+        fields = ['phone', 'passport_number', 'birth_date', 'avatar']
+        widgets = {
+            'birth_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'passport_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'avatar': forms.FileInput(attrs={'class': 'form-control'}),
+        }
+
+
+class FavoriteForm(forms.ModelForm):
+    """Форма для избранного"""
+
+    class Meta:
+        model = Favorite
+        fields = ['guest', 'hotel']
+
+
+class SearchForm(forms.Form):
+    """Форма поиска отелей"""
+    destination = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'placeholder': 'Куда хотите поехать?',
+        'class': 'search-input'
+    }))
+    check_in = forms.DateField(required=False, widget=forms.DateInput(attrs={
+        'type': 'date',
+        'class': 'form-control'
+    }))
+    check_out = forms.DateField(required=False, widget=forms.DateInput(attrs={
+        'type': 'date',
+        'class': 'form-control'
+    }))
+    guests = forms.IntegerField(required=False, min_value=1, initial=2, widget=forms.NumberInput(attrs={
+        'class': 'form-control'
+    }))
+    min_price = forms.DecimalField(required=False, min_value=0, widget=forms.NumberInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'от'
+    }))
+    max_price = forms.DecimalField(required=False, min_value=0, widget=forms.NumberInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'до'
+    }))
+    stars = forms.MultipleChoiceField(required=False, choices=[(i, f"{i} звезд") for i in range(1, 6)],
+                                      widget=forms.CheckboxSelectMultiple)
+    amenities = forms.MultipleChoiceField(required=False, choices=[
+        ('wifi', 'Бесплатный Wi-Fi'),
+        ('parking', 'Парковка'),
+        ('pool', 'Бассейн'),
+        ('fitness', 'Фитнес-центр'),
+        ('restaurant', 'Ресторан'),
+    ], widget=forms.CheckboxSelectMultiple)
 
 
 class HotelForm(forms.ModelForm):
-    """Форма для отеля"""
+    """Форма для отеля с улучшенными виджетами"""
 
     class Meta:
         model = Hotel
         fields = ['name', 'address', 'description', 'stars', 'phone', 'email', 'check_in_time', 'check_out_time']
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 4, 'class': 'form-control'}),
-            'check_in_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
-            'check_out_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'address': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'stars': forms.Select(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Название отеля'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Адрес'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Описание отеля'}),
+            'stars': forms.Select(attrs={'class': 'form-select'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+7 (xxx) xxx-xx-xx'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'example@mail.com'}),
+            'check_in_time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'check_out_time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
         }
 
 
@@ -30,16 +149,17 @@ class RoomForm(forms.ModelForm):
         fields = ['hotel', 'room_number', 'room_type', 'price_per_night', 'capacity',
                   'square', 'has_wifi', 'has_tv', 'has_air_conditioning', 'description', 'is_available']
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
-            'room_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'price_per_night': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-            'capacity': forms.NumberInput(attrs={'class': 'form-control'}),
-            'square': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
-            'hotel': forms.Select(attrs={'class': 'form-control'}),
-            'room_type': forms.Select(attrs={'class': 'form-control'}),
+            'hotel': forms.Select(attrs={'class': 'form-select'}),
+            'room_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Номер комнаты'}),
+            'room_type': forms.Select(attrs={'class': 'form-select'}),
+            'price_per_night': forms.NumberInput(
+                attrs={'class': 'form-control', 'step': '0.01', 'placeholder': 'Цена за ночь'}),
+            'capacity': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Вместимость'}),
+            'square': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1', 'placeholder': 'Площадь (м²)'}),
             'has_wifi': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'has_tv': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'has_air_conditioning': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Описание номера'}),
             'is_available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
@@ -181,3 +301,10 @@ class PaymentForm(forms.ModelForm):
             'transaction_id': forms.TextInput(attrs={'class': 'form-control'}),
             'status': forms.Select(attrs={'class': 'form-control'}),
         }
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    """Форма смены пароля"""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})

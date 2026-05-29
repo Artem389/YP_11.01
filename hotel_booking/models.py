@@ -95,22 +95,56 @@ class Room(models.Model):
         unique_together = ['hotel', 'room_number']
         ordering = ['hotel__name', 'room_number']
 
+
 class Guest(models.Model):
     """Модель гостя (расширение пользователя)"""
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='guest_profile', verbose_name="Пользователь")
-    phone = models.CharField(max_length=20, verbose_name="Телефон", null=True,)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='guest_profile',
+                                verbose_name="Пользователь")
+    phone = models.CharField(max_length=20, verbose_name="Телефон", null=True, blank=True)
     passport_number = models.CharField(max_length=20, blank=True, verbose_name="Номер паспорта")
     birth_date = models.DateField(null=True, blank=True, verbose_name="Дата рождения")
     loyalty_points = models.IntegerField(default=0, verbose_name="Бонусные баллы")
     registration_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата регистрации")
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, verbose_name="Аватар")
 
     def __str__(self):
         return f"{self.user.get_full_name() or self.user.username}"
+
+    def get_full_name(self):
+        return self.user.get_full_name()
+
+    def add_points(self, points):
+        """Добавить бонусные баллы"""
+        self.loyalty_points += points
+        self.save()
+
+    def use_points(self, points):
+        """Использовать бонусные баллы"""
+        if self.loyalty_points >= points:
+            self.loyalty_points -= points
+            self.save()
+            return True
+        return False
 
     class Meta:
         verbose_name = "Гость"
         verbose_name_plural = "Гости"
         ordering = ['user__username']
+
+class Favorite(models.Model):
+    """Модель избранного"""
+    guest = models.ForeignKey(Guest, on_delete=models.CASCADE, related_name='favorites', verbose_name="Гость")
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='favorited_by', verbose_name="Отель")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления")
+
+    class Meta:
+        unique_together = ['guest', 'hotel']
+        verbose_name = "Избранное"
+        verbose_name_plural = "Избранное"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.guest.user.username} - {self.hotel.name}"
 
 class Service(models.Model):
     """Модель дополнительной услуги"""

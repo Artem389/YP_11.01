@@ -1,0 +1,157 @@
+<!-- Новый файл: hotel_booking/hotel_comparison.html - Страница сравнения отелей -->
+{% extends 'base.html' %}
+{% block title %}Сравнение отелей{% endblock %}
+
+{% block extra_css %}
+<style>
+    .comparison-table {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    .comparison-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+
+    .comparison-table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        width: 200px;
+    }
+
+    .hotel-col {
+        background: #f8f9fa;
+    }
+
+    .hotel-name {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .hotel-price {
+        font-size: 1.5rem;
+        color: #667eea;
+        font-weight: bold;
+    }
+
+    .btn-compare-book {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    @media (max-width: 768px) {
+        .comparison-table {
+            overflow-x: auto;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom: 2rem;">Сравнение отелей</h1>
+
+<div class="comparison-table">
+    <table>
+        <tr>
+            <th>Характеристика</th>
+            <th>Grand Plaza Hotel</th>
+            <th>Seaside Resort</th>
+            <th>Business Hotel</th>
+        </tr>
+        <tr>
+            <td>Рейтинг</td>
+            <td>★★★★★ (4.8)</td>
+            <td>★★★★★ (4.9)</td>
+            <td>★★★★☆ (4.5)</td>
+        </tr>
+        <tr>
+            <td>Расположение</td>
+            <td>Москва, центр</td>
+            <td>Сочи, Адлер</td>
+            <td>Санкт-Петербург</td>
+        </tr>
+        <tr>
+            <td>Цена за ночь</td>
+            <td>8 500 руб</td>
+            <td>12 000 руб</td>
+            <td>6 500 руб</td>
+        </tr>
+        <tr>
+            <td>Завтрак</td>
+            <td>Включен</td>
+            <td>Включен</td>
+            <td>Не включен</td>
+        </tr>
+        <tr>
+            <td>Wi-Fi</td>
+            <td>Бесплатный</td>
+            <td>Бесплатный</td>
+            <td>Бесплатный</td>
+        </tr>
+        <tr>
+            <td>Парковка</td>
+            <td>Платная</td>
+            <td>Бесплатная</td>
+            <td>Бесплатная</td>
+        </tr>
+        <tr>
+            <td>Бассейн</td>
+            <td>Нет</td>
+            <td>Да (крытый и открытый)</td>
+            <td>Нет</td>
+        </tr>
+        <tr>
+            <td>Spa-центр</td>
+            <td>Да</td>
+            <td>Да</td>
+            <td>Нет</td>
+        </tr>
+        <tr>
+            <td>Фитнес-центр</td>
+            <td>Да</td>
+            <td>Да</td>
+            <td>Да</td>
+        </tr>
+        <tr>
+            <td>Ресторан</td>
+            <td>2 ресторана</td>
+            <td>3 ресторана</td>
+            <td>1 ресторан</td>
+        </tr>
+        <tr>
+            <td>Расстояние до метро</td>
+            <td>5 минут</td>
+            <td>—</td>
+            <td>10 минут</td>
+        </tr>
+        <tr>
+            <td>Отмена бронирования</td>
+            <td>Бесплатно за 24 часа</td>
+            <td>Бесплатно за 48 часов</td>
+            <td>Бесплатно за 24 часа</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><a href="#" class="btn-compare-book">Забронировать</a></td>
+            <td><a href="#" class="btn-compare-book">Забронировать</a></td>
+            <td><a href="#" class="btn-compare-book">Забронировать</a></td>
+        </tr>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,381 @@
+<!-- hotel_booking/profile_settings.html - Настройки профиля -->
+{% extends 'base.html' %}
+{% block title %}Настройки профиля{% endblock %}
+
+{% block extra_css %}
+<style>
+    .settings-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 2rem;
+    }
+
+    .settings-sidebar {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        height: fit-content;
+        position: sticky;
+        top: 100px;
+    }
+
+    .settings-menu {
+        list-style: none;
+    }
+
+    .settings-menu li {
+        margin-bottom: 0.5rem;
+    }
+
+    .settings-menu a {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: #666;
+        text-decoration: none;
+        border-radius: 10px;
+        transition: all 0.3s;
+    }
+
+    .settings-menu a:hover,
+    .settings-menu a.active {
+        background: #f0f0ff;
+        color: #667eea;
+    }
+
+    .settings-content {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+    }
+
+    .settings-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .settings-header h2 {
+        margin-bottom: 0.25rem;
+    }
+
+    .settings-header p {
+        color: #666;
+    }
+
+    /* Forms */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .btn-save {
+        padding: 0.75rem 2rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+
+    .btn-save:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Avatar Upload */
+    .avatar-section {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .current-avatar {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+        margin: 0 auto 1rem;
+    }
+
+    .avatar-hint {
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    /* Switch Toggle */
+    .switch-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .switch-label {
+        font-weight: 500;
+    }
+
+    .switch-desc {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 0.25rem;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.3s;
+        border-radius: 24px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+    }
+
+    input:checked + .slider {
+        background-color: #667eea;
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+
+    @media (max-width: 992px) {
+        .settings-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .settings-sidebar {
+            position: static;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="settings-layout">
+    <!-- Sidebar -->
+    <aside class="settings-sidebar">
+        <ul class="settings-menu">
+            <li>
+                <a href="{% url 'profile_edit' %}" class="{% if active_tab == 'profile' %}active{% endif %}">
+                    👤 Личные данные
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'profile_security' %}" class="{% if active_tab == 'security' %}active{% endif %}">
+                    🔒 Безопасность
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'profile_notifications' %}" class="{% if active_tab == 'notifications' %}active{% endif %}">
+                    🔔 Уведомления
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Content -->
+    <div class="settings-content">
+        {% if active_tab == 'profile' %}
+            <!-- Личные данные -->
+            <div class="settings-header">
+                <h2>Личные данные</h2>
+                <p>Управляйте информацией о себе</p>
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="avatar-section">
+                    <div class="current-avatar">
+                        {% if guest.avatar %}
+                            <img src="{{ guest.avatar.url }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                        {% else %}
+                            👤
+                        {% endif %}
+                    </div>
+                    <div class="avatar-hint">Загрузите фото профиля (необязательно)</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Имя</label>
+                        {{ user_form.first_name }}
+                    </div>
+                    <div class="form-group">
+                        <label>Фамилия</label>
+                        {{ user_form.last_name }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    {{ user_form.email }}
+                </div>
+
+                <div class="form-group">
+                    <label>Телефон</label>
+                    {{ guest_form.phone }}
+                </div>
+
+                <div class="form-group">
+                    <label>Номер паспорта</label>
+                    {{ guest_form.passport_number }}
+                </div>
+
+                <div class="form-group">
+                    <label>Дата рождения</label>
+                    {{ guest_form.birth_date }}
+                </div>
+
+                <div class="form-group">
+                    <label>Аватар</label>
+                    {{ guest_form.avatar }}
+                </div>
+
+                <button type="submit" class="btn-save">Сохранить изменения</button>
+            </form>
+
+        {% elif active_tab == 'security' %}
+            <!-- Безопасность -->
+            <div class="settings-header">
+                <h2>Безопасность</h2>
+                <p>Управляйте паролем и настройками безопасности</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label>Старый пароль</label>
+                    {{ form.old_password }}
+                </div>
+
+                <div class="form-group">
+                    <label>Новый пароль</label>
+                    {{ form.new_password1 }}
+                    <div class="avatar-hint">Пароль должен содержать не менее 8 символов</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Подтверждение нового пароля</label>
+                    {{ form.new_password2 }}
+                </div>
+
+                <button type="submit" class="btn-save">Изменить пароль</button>
+            </form>
+
+        {% elif active_tab == 'notifications' %}
+            <!-- Уведомления -->
+            <div class="settings-header">
+                <h2>Уведомления</h2>
+                <p>Настройте, какие уведомления вы хотите получать</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="switch-group">
+                    <div>
+                        <div class="switch-label">Email уведомления</div>
+                        <div class="switch-desc">Получать уведомления на email о статусе бронирований</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" name="email_notifications" {% if email_notifications %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="switch-group">
+                    <div>
+                        <div class="switch-label">Напоминания о бронированиях</div>
+                        <div class="switch-desc">Напоминать за 3 дня до заезда</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" name="booking_reminders" {% if booking_reminders %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="switch-group">
+                    <div>
+                        <div class="switch-label">Акции и предложения</div>
+                        <div class="switch-desc">Получать информацию о скидках и специальных предложениях</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" name="promo_offers" {% if promo_offers %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-save" style="margin-top: 2rem;">Сохранить настройки</button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

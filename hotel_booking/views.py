@@ -1,4 +1,4 @@
-from django.db.models import Q, Avg, ProtectedError
+from django.db.models import Q, Avg, ProtectedError, Min
 from django.db import IntegrityError
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -153,6 +153,507 @@ class BaseDeleteView(DeleteView):
             return redirect(self.get_success_url())
 
 
+# views.py - добавляем новые views
+
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q, Sum, Avg, Count, F
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView, FormView
+from django.urls import reverse_lazy, reverse
+from django.contrib import messages
+from django.utils import timezone
+from decimal import Decimal
+from .forms import (
+    RegisterForm, LoginForm, UserProfileForm, GuestProfileForm,
+    SearchForm, FavoriteForm, BookingForm
+)
+from .models import Guest, Favorite, Hotel, Room, Booking, Review, Service
+import json
+
+
+# ========== Аутентификация ==========
+
+def register_view(request):
+    """Регистрация пользователя"""
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, f'Добро пожаловать, {user.username}! Регистрация успешно завершена.')
+            return redirect('dashboard')
+        else:
+            for error in form.errors.values():
+                messages.error(request, error)
+    else:
+        form = RegisterForm()
+
+    return render(request, 'register.html', {'form': form})
+
+
+def login_view(request):
+    """Авторизация пользователя"""
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'С возвращением, {username}!')
+                next_url = request.GET.get('next', 'dashboard')
+                return redirect(next_url)
+        else:
+            messages.error(request, 'Неверное имя пользователя или пароль.')
+    else:
+        form = LoginForm()
+
+    return render(request, 'login.html', {'form': form})
+
+
+def logout_view(request):
+    """Выход из системы"""
+    logout(request)
+    messages.info(request, 'Вы вышли из системы.')
+    return redirect('home')
+
+
+# ========== Личный кабинет ==========
+
+@login_required
+def dashboard_view(request):
+    """Панель управления пользователя"""
+    try:
+        guest = request.user.guest_profile
+    except Guest.DoesNotExist:
+        guest = Guest.objects.create(user=request.user)
+
+    # Статистика
+    active_bookings = Booking.objects.filter(
+        guest=guest,
+        status__in=['pending', 'confirmed', 'checked_in'],
+        check_out_date__gte=timezone.now().date()
+    ).count()
+
+    completed_bookings = Booking.objects.filter(
+        guest=guest,
+        status='checked_out'
+    ).count()
+
+    reviews_count = Review.objects.filter(guest=guest).count()
+
+    # Ближайшие бронирования
+    upcoming_bookings = Booking.objects.filter(
+        guest=guest,
+        status__in=['pending', 'confirmed'],
+        check_in_date__gte=timezone.now().date()
+    ).order_by('check_in_date')[:5]
+
+    context = {
+        'guest': guest,
+        'active_bookings': active_bookings,
+        'completed_bookings': completed_bookings,
+        'reviews_count': reviews_count,
+        'upcoming_bookings': upcoming_bookings,
+        'loyalty_points': guest.loyalty_points,
+    }
+
+    return render(request, 'dashboard.html', context)
+
+
+@login_required
+def profile_edit_view(request):
+    """Редактирование профиля"""
+    try:
+        guest = request.user.guest_profile
+    except Guest.DoesNotExist:
+        guest = Guest.objects.create(user=request.user)
+
+    if request.method == 'POST':
+        user_form = UserProfileForm(request.POST, instance=request.user)
+        guest_form = GuestProfileForm(request.POST, request.FILES, instance=guest)
+
+        if user_form.is_valid() and guest_form.is_valid():
+            user_form.save()
+            guest_form.save()
+            messages.success(request, 'Профиль успешно обновлен!')
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Пожалуйста, исправьте ошибки в форме.')
+    else:
+        user_form = UserProfileForm(instance=request.user)
+        guest_form = GuestProfileForm(instance=guest)
+
+    context = {
+        'user_form': user_form,
+        'guest_form': guest_form,
+        'guest': guest,
+    }
+
+    return render(request, 'profile_edit.html', context)
+
+
+# ========== Поиск и фильтрация отелей ==========
+
+def hotel_search_view(request):
+    """Страница поиска отелей"""
+    form = SearchForm(request.GET or None)
+    hotels = Hotel.objects.all().annotate(
+        avg_rating=Avg('reviews__rating'),
+        reviews_count=Count('reviews')
+    )
+
+    # Применяем фильтры
+    if form.is_valid():
+        data = form.cleaned_data
+
+        # Поиск по названию или адресу
+        if data.get('destination'):
+            hotels = hotels.filter(
+                Q(name__icontains=data['destination']) |
+                Q(address__icontains=data['destination'])
+            )
+
+        # Фильтр по звездам
+        if data.get('stars'):
+            hotels = hotels.filter(stars__in=[int(s) for s in data['stars']])
+
+        # Фильтр по цене (через комнаты)
+        if data.get('min_price'):
+            hotels = hotels.filter(rooms__price_per_night__gte=data['min_price'])
+        if data.get('max_price'):
+            hotels = hotels.filter(rooms__price_per_night__lte=data['max_price'])
+
+        # Фильтр по удобствам (через комнаты)
+        if data.get('amenities'):
+            if 'wifi' in data['amenities']:
+                hotels = hotels.filter(rooms__has_wifi=True)
+            if 'parking' in data['amenities']:
+                hotels = hotels.filter(services__name__icontains='парковка')
+
+    # Сортировка
+    sort_by = request.GET.get('sort', 'popularity')
+    if sort_by == 'price_asc':
+        hotels = hotels.annotate(min_price=Min('rooms__price_per_night')).order_by('min_price')
+    elif sort_by == 'price_desc':
+        hotels = hotels.annotate(min_price=Min('rooms__price_per_night')).order_by('-min_price')
+    elif sort_by == 'rating':
+        hotels = hotels.order_by('-avg_rating')
+    else:  # popularity
+        hotels = hotels.order_by('-stars', '-avg_rating')
+
+    # Пагинация
+    from django.core.paginator import Paginator
+    paginator = Paginator(hotels, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'form': form,
+        'page_obj': page_obj,
+        'total_count': hotels.count(),
+        'current_sort': sort_by,
+    }
+
+    return render(request, 'hotel_search.html', context)
+
+
+# ========== Избранное ==========
+
+@login_required
+def favorites_view(request):
+    """Страница избранного"""
+    try:
+        guest = request.user.guest_profile
+        favorites = Favorite.objects.filter(guest=guest).select_related('hotel')
+    except Guest.DoesNotExist:
+        favorites = []
+
+    context = {
+        'favorites': favorites,
+    }
+
+    return render(request, 'favorites.html', context)
+
+
+@login_required
+def add_favorite(request, hotel_id):
+    """Добавить отель в избранное"""
+    try:
+        guest = request.user.guest_profile
+        hotel = get_object_or_404(Hotel, id=hotel_id)
+
+        favorite, created = Favorite.objects.get_or_create(guest=guest, hotel=hotel)
+
+        if created:
+            messages.success(request, f'Отель "{hotel.name}" добавлен в избранное.')
+        else:
+            messages.info(request, f'Отель "{hotel.name}" уже в избранном.')
+
+        return redirect(request.META.get('HTTP_REFERER', 'hotel_list'))
+    except Guest.DoesNotExist:
+        messages.warning(request, 'Пожалуйста, заполните профиль для добавления в избранное.')
+        return redirect('profile_edit')
+
+
+@login_required
+def remove_favorite(request, favorite_id):
+    """Удалить отель из избранного"""
+    try:
+        guest = request.user.guest_profile
+        favorite = get_object_or_404(Favorite, id=favorite_id, guest=guest)
+        hotel_name = favorite.hotel.name
+        favorite.delete()
+        messages.success(request, f'Отель "{hotel_name}" удален из избранного.')
+    except Guest.DoesNotExist:
+        messages.warning(request, 'Профиль не найден.')
+
+    return redirect('favorites')
+
+
+# ========== Оформление бронирования (пошаговое) ==========
+
+@login_required
+def booking_checkout_view(request, hotel_id=None, room_id=None):
+    """Пошаговое оформление бронирования"""
+    try:
+        guest = request.user.guest_profile
+    except Guest.DoesNotExist:
+        messages.warning(request, 'Пожалуйста, заполните профиль для бронирования.')
+        return redirect('profile_edit')
+
+    step = request.GET.get('step', '1')
+
+    # Шаг 1: Выбор номера
+    if step == '1':
+        hotels = Hotel.objects.all()
+        rooms = Room.objects.filter(is_available=True)
+
+        if hotel_id:
+            rooms = rooms.filter(hotel_id=hotel_id)
+        if room_id:
+            request.session['selected_room_id'] = room_id
+            return redirect('booking_checkout?step=2')
+
+        context = {
+            'hotels': hotels,
+            'rooms': rooms,
+            'step': 1,
+        }
+        return render(request, 'booking_checkout.html', context)
+
+    # Шаг 2: Данные гостя
+    elif step == '2':
+        room_id = request.session.get('selected_room_id')
+        if not room_id:
+            messages.error(request, 'Пожалуйста, сначала выберите номер.')
+            return redirect('booking_checkout?step=1')
+
+        room = get_object_or_404(Room, id=room_id)
+
+        if request.method == 'POST':
+            # Сохраняем данные в сессию
+            request.session['booking_data'] = {
+                'check_in': request.POST.get('check_in'),
+                'check_out': request.POST.get('check_out'),
+                'guests_count': request.POST.get('guests_count'),
+                'special_requests': request.POST.get('special_requests', ''),
+            }
+            return redirect('booking_checkout?step=3')
+
+        context = {
+            'room': room,
+            'guest': guest,
+            'step': 2,
+        }
+        return render(request, 'booking_checkout.html', context)
+
+    # Шаг 3: Дополнительные услуги
+    elif step == '3':
+        room_id = request.session.get('selected_room_id')
+        booking_data = request.session.get('booking_data', {})
+
+        if not room_id or not booking_data:
+            messages.error(request, 'Пожалуйста, заполните все предыдущие шаги.')
+            return redirect('booking_checkout?step=1')
+
+        room = get_object_or_404(Room, id=room_id)
+        services = Service.objects.filter(is_active=True)
+
+        if request.method == 'POST':
+            selected_services = request.POST.getlist('services')
+            request.session['selected_services'] = selected_services
+            return redirect('booking_checkout?step=4')
+
+        context = {
+            'room': room,
+            'services': services,
+            'step': 3,
+        }
+        return render(request, 'booking_checkout.html', context)
+
+    # Шаг 4: Оплата
+    elif step == '4':
+        room_id = request.session.get('selected_room_id')
+        booking_data = request.session.get('booking_data', {})
+        selected_services = request.session.get('selected_services', [])
+
+        if not room_id or not booking_data:
+            messages.error(request, 'Пожалуйста, заполните все предыдущие шаги.')
+            return redirect('booking_checkout?step=1')
+
+        room = get_object_or_404(Room, id=room_id)
+
+        # Расчет стоимости
+        check_in = timezone.datetime.strptime(booking_data['check_in'], '%Y-%m-%d').date()
+        check_out = timezone.datetime.strptime(booking_data['check_out'], '%Y-%m-%d').date()
+        nights = (check_out - check_in).days
+        room_total = room.price_per_night * nights
+
+        services_list = Service.objects.filter(id__in=selected_services)
+        services_total = services_list.aggregate(total=Sum('price'))['total'] or 0
+
+        total_price = room_total + services_total
+
+        # Применяем бонусные баллы
+        use_points = request.POST.get('use_points') == 'on'
+        points_discount = 0
+
+        if use_points and guest.loyalty_points > 0:
+            max_discount = min(guest.loyalty_points, total_price)
+            points_discount = max_discount
+            total_price -= points_discount
+
+        if request.method == 'POST':
+            # Создаем бронирование
+            booking = Booking.objects.create(
+                guest=guest,
+                room=room,
+                check_in_date=check_in,
+                check_out_date=check_out,
+                total_price=total_price,
+                status='pending',
+                special_requests=booking_data.get('special_requests', '')
+            )
+
+            # Добавляем услуги
+            booking.services.set(services_list)
+
+            # Используем бонусные баллы
+            if use_points and points_discount > 0:
+                guest.use_points(points_discount)
+
+            # Очищаем сессию
+            request.session.pop('selected_room_id', None)
+            request.session.pop('booking_data', None)
+            request.session.pop('selected_services', None)
+
+            messages.success(request, f'Бронирование #{booking.id} успешно создано!')
+            return redirect('booking_detail', pk=booking.id)
+
+        context = {
+            'room': room,
+            'services': services_list,
+            'room_total': room_total,
+            'services_total': services_total,
+            'total_price': total_price,
+            'points_discount': points_discount,
+            'available_points': guest.loyalty_points,
+            'nights': nights,
+            'step': 4,
+        }
+        return render(request, 'booking_checkout.html', context)
+
+    return redirect('booking_checkout?step=1')
+
+
+# ========== Сравнение отелей ==========
+
+def hotel_comparison_view(request):
+    """Страница сравнения отелей"""
+    hotel_ids = request.GET.getlist('hotels')
+
+    if not hotel_ids:
+        # Показываем популярные отели для сравнения по умолчанию
+        hotels = Hotel.objects.all().order_by('-stars')[:3]
+    else:
+        hotels = Hotel.objects.filter(id__in=hotel_ids)
+
+    # Собираем данные для сравнения
+    comparison_data = []
+    for hotel in hotels:
+        min_room_price = hotel.rooms.aggregate(min_price=Min('price_per_night'))['min_price'] or 0
+        amenities = []
+
+        if hotel.rooms.filter(has_wifi=True).exists():
+            amenities.append('Wi-Fi')
+        if hotel.rooms.filter(has_tv=True).exists():
+            amenities.append('Телевизор')
+        if hotel.rooms.filter(has_air_conditioning=True).exists():
+            amenities.append('Кондиционер')
+
+        comparison_data.append({
+            'hotel': hotel,
+            'min_price': min_room_price,
+            'avg_rating': hotel.reviews.aggregate(avg=Avg('rating'))['avg'] or 0,
+            'reviews_count': hotel.reviews.count(),
+            'amenities': amenities,
+            'has_pool': hotel.services.filter(name__icontains='бассейн').exists(),
+            'has_spa': hotel.services.filter(name__icontains='spa').exists(),
+            'has_restaurant': hotel.services.filter(name__icontains='ресторан').exists(),
+        })
+
+    context = {
+        'comparison_data': comparison_data,
+    }
+
+    return render(request, 'hotel_comparison.html', context)
+
+
+# ========== Мои бронирования ==========
+
+@login_required
+def my_bookings_view(request):
+    """Страница с бронированиями пользователя"""
+    try:
+        guest = request.user.guest_profile
+
+        status_filter = request.GET.get('status', 'all')
+
+        bookings = Booking.objects.filter(guest=guest)
+
+        if status_filter == 'upcoming':
+            bookings = bookings.filter(
+                check_in_date__gte=timezone.now().date(),
+                status__in=['pending', 'confirmed']
+            )
+        elif status_filter == 'past':
+            bookings = bookings.filter(check_out_date__lt=timezone.now().date())
+        elif status_filter == 'cancelled':
+            bookings = bookings.filter(status='cancelled')
+        elif status_filter != 'all':
+            bookings = bookings.filter(status=status_filter)
+
+        bookings = bookings.order_by('-created_at')
+
+        context = {
+            'bookings': bookings,
+            'current_filter': status_filter,
+        }
+    except Guest.DoesNotExist:
+        context = {'bookings': []}
+
+    return render(request, 'my_bookings.html', context)
+
 # ========== Главная страница ==========
 
 def home(request):
@@ -164,19 +665,20 @@ def home(request):
             'rooms_count': Room.objects.count(),
             'bookings_count': Booking.objects.count(),
             'reviews_count': Review.objects.count(),
+            'now': timezone.now(),
         }
-        return render(request, 'hotel_booking/home.html', context)
+        return render(request, 'home.html', context)
     except Exception as e:
         logger.error(f"Error in home view: {str(e)}")
         messages.error(request, 'Ошибка при загрузке главной страницы')
-        return render(request, 'hotel_booking/home.html', {})
+        return render(request, 'home.html', {})
 
 
 # ========== Hotel CRUD ==========
 
 class HotelListView(BaseListView):
     model = Hotel
-    template_name = 'hotel_booking/hotel_list.html'
+    template_name = 'hotel_list.html'
     title = 'Отели'
     create_url = reverse_lazy('hotel_create')
     detail_url_name = 'hotel_detail'
@@ -198,7 +700,7 @@ class HotelListView(BaseListView):
 
 class HotelDetailView(DetailView):
     model = Hotel
-    template_name = 'hotel_booking/hotel_detail.html'
+    template_name = 'hotel_detail.html'
     context_object_name = 'hotel'
 
     def get_object(self, queryset=None):
@@ -223,7 +725,7 @@ class HotelDetailView(DetailView):
 class HotelCreateView(BaseCreateView):
     model = Hotel
     form_class = HotelForm
-    template_name = 'hotel_booking/hotel_form.html'
+    template_name = 'hotel_form.html'
     success_url = reverse_lazy('hotel_list')
     cancel_url = reverse_lazy('hotel_list')
     form_title = 'Создание отеля'
@@ -232,7 +734,7 @@ class HotelCreateView(BaseCreateView):
 class HotelUpdateView(BaseUpdateView):
     model = Hotel
     form_class = HotelForm
-    template_name = 'hotel_booking/hotel_form.html'
+    template_name = 'hotel_form.html'
     success_url = reverse_lazy('hotel_list')
     cancel_url = reverse_lazy('hotel_list')
     form_title = 'Редактирование отеля'
@@ -240,7 +742,7 @@ class HotelUpdateView(BaseUpdateView):
 
 class HotelDeleteView(BaseDeleteView):
     model = Hotel
-    template_name = 'hotel_booking/hotel_confirm_delete.html'
+    template_name = 'hotel_confirm_delete.html'
     success_url = reverse_lazy('hotel_list')
     cancel_url = reverse_lazy('hotel_list')
 
@@ -281,7 +783,7 @@ class HotelDeleteView(BaseDeleteView):
 
 class RoomListView(BaseListView):
     model = Room
-    template_name = 'hotel_booking/room_list.html'
+    template_name = 'room_list.html'
     title = 'Номера'
     create_url = reverse_lazy('room_create')
     detail_url_name = 'room_detail'
@@ -302,7 +804,7 @@ class RoomListView(BaseListView):
 
 class RoomDetailView(DetailView):
     model = Room
-    template_name = 'hotel_booking/room_detail.html'
+    template_name = 'room_detail.html'
     context_object_name = 'room'
 
     def get_object(self, queryset=None):
@@ -327,7 +829,7 @@ class RoomDetailView(DetailView):
 class RoomCreateView(BaseCreateView):
     model = Room
     form_class = RoomForm
-    template_name = 'hotel_booking/room_form.html'
+    template_name = 'room_form.html'
     success_url = reverse_lazy('room_list')
     cancel_url = reverse_lazy('room_list')
     form_title = 'Создание номера'
@@ -336,7 +838,7 @@ class RoomCreateView(BaseCreateView):
 class RoomUpdateView(BaseUpdateView):
     model = Room
     form_class = RoomForm
-    template_name = 'hotel_booking/room_form.html'
+    template_name = 'room_form.html'
     success_url = reverse_lazy('room_list')
     cancel_url = reverse_lazy('room_list')
     form_title = 'Редактирование номера'
@@ -344,7 +846,7 @@ class RoomUpdateView(BaseUpdateView):
 
 class RoomDeleteView(BaseDeleteView):
     model = Room
-    template_name = 'hotel_booking/room_confirm_delete.html'
+    template_name = 'room_confirm_delete.html'
     success_url = reverse_lazy('room_list')
     cancel_url = reverse_lazy('room_list')
     warning_message = 'Все бронирования этого номера будут отменены.'
@@ -422,7 +924,7 @@ class RoomDeleteView(BaseDeleteView):
 
 class GuestListView(BaseListView):
     model = Guest
-    template_name = 'hotel_booking/guest_list.html'
+    template_name = 'guest_list.html'
     title = 'Гости'
     create_url = reverse_lazy('guest_create')
     detail_url_name = 'guest_detail'
@@ -443,7 +945,7 @@ class GuestListView(BaseListView):
 
 class GuestDetailView(DetailView):
     model = Guest
-    template_name = 'hotel_booking/guest_detail.html'
+    template_name = 'guest_detail.html'
     context_object_name = 'guest'
 
     def get_object(self, queryset=None):
@@ -468,7 +970,7 @@ class GuestDetailView(DetailView):
 class GuestCreateView(BaseCreateView):
     model = Guest
     form_class = GuestForm
-    template_name = 'hotel_booking/guest_form.html'
+    template_name = 'guest_form.html'
     success_url = reverse_lazy('guest_list')
     cancel_url = reverse_lazy('guest_list')
     form_title = 'Создание гостя'
@@ -477,7 +979,7 @@ class GuestCreateView(BaseCreateView):
 class GuestUpdateView(BaseUpdateView):
     model = Guest
     form_class = GuestForm
-    template_name = 'hotel_booking/guest_form.html'
+    template_name = 'guest_form.html'
     success_url = reverse_lazy('guest_list')
     cancel_url = reverse_lazy('guest_list')
     form_title = 'Редактирование гостя'
@@ -485,7 +987,7 @@ class GuestUpdateView(BaseUpdateView):
 
 class GuestDeleteView(BaseDeleteView):
     model = Guest
-    template_name = 'hotel_booking/guest_confirm_delete.html'
+    template_name = 'guest_confirm_delete.html'
     success_url = reverse_lazy('guest_list')
     cancel_url = reverse_lazy('guest_list')
     warning_message = 'Все бронирования и отзывы этого гостя также будут удалены.'
@@ -495,7 +997,7 @@ class GuestDeleteView(BaseDeleteView):
 
 class ServiceListView(BaseListView):
     model = Service
-    template_name = 'hotel_booking/service_list.html'
+    template_name = 'service_list.html'
     title = 'Услуги'
     create_url = reverse_lazy('service_create')
     detail_url_name = 'service_detail'
@@ -516,7 +1018,7 @@ class ServiceListView(BaseListView):
 
 class ServiceDetailView(DetailView):
     model = Service
-    template_name = 'hotel_booking/service_detail.html'
+    template_name = 'service_detail.html'
     context_object_name = 'service'
 
     def get_object(self, queryset=None):
@@ -541,7 +1043,7 @@ class ServiceDetailView(DetailView):
 class ServiceCreateView(BaseCreateView):
     model = Service
     form_class = ServiceForm
-    template_name = 'hotel_booking/service_form.html'
+    template_name = 'service_form.html'
     success_url = reverse_lazy('service_list')
     cancel_url = reverse_lazy('service_list')
     form_title = 'Создание услуги'
@@ -550,7 +1052,7 @@ class ServiceCreateView(BaseCreateView):
 class ServiceUpdateView(BaseUpdateView):
     model = Service
     form_class = ServiceForm
-    template_name = 'hotel_booking/service_form.html'
+    template_name = 'service_form.html'
     success_url = reverse_lazy('service_list')
     cancel_url = reverse_lazy('service_list')
     form_title = 'Редактирование услуги'
@@ -558,7 +1060,7 @@ class ServiceUpdateView(BaseUpdateView):
 
 class ServiceDeleteView(BaseDeleteView):
     model = Service
-    template_name = 'hotel_booking/service_confirm_delete.html'
+    template_name = 'service_confirm_delete.html'
     success_url = reverse_lazy('service_list')
     cancel_url = reverse_lazy('service_list')
 
@@ -567,7 +1069,7 @@ class ServiceDeleteView(BaseDeleteView):
 
 class BookingListView(BaseListView):
     model = Booking
-    template_name = 'hotel_booking/booking_list.html'
+    template_name = 'booking_list.html'
     title = 'Бронирования'
     create_url = reverse_lazy('booking_create')
     detail_url_name = 'booking_detail'
@@ -588,7 +1090,7 @@ class BookingListView(BaseListView):
 
 class BookingDetailView(DetailView):
     model = Booking
-    template_name = 'hotel_booking/booking_detail.html'
+    template_name = 'booking_detail.html'
     context_object_name = 'booking'
 
     def get_object(self, queryset=None):
@@ -613,7 +1115,7 @@ class BookingDetailView(DetailView):
 class BookingCreateView(BaseCreateView):
     model = Booking
     form_class = BookingForm
-    template_name = 'hotel_booking/booking_form.html'
+    template_name = 'booking_form.html'
     success_url = reverse_lazy('booking_list')
     cancel_url = reverse_lazy('booking_list')
     form_title = 'Создание бронирования'
@@ -660,7 +1162,7 @@ class BookingCreateView(BaseCreateView):
 class BookingUpdateView(BaseUpdateView):
     model = Booking
     form_class = BookingForm
-    template_name = 'hotel_booking/booking_form.html'
+    template_name = 'booking_form.html'
     success_url = reverse_lazy('booking_list')
     cancel_url = reverse_lazy('booking_list')
     form_title = 'Редактирование бронирования'
@@ -668,7 +1170,7 @@ class BookingUpdateView(BaseUpdateView):
 
 class BookingDeleteView(BaseDeleteView):
     model = Booking
-    template_name = 'hotel_booking/booking_confirm_delete.html'
+    template_name = 'booking_confirm_delete.html'
     success_url = reverse_lazy('booking_list')
     cancel_url = reverse_lazy('booking_list')
 
@@ -708,7 +1210,7 @@ class BookingDeleteView(BaseDeleteView):
 
 class ReviewListView(BaseListView):
     model = Review
-    template_name = 'hotel_booking/review_list.html'
+    template_name = 'review_list.html'
     title = 'Отзывы'
     create_url = None
     detail_url_name = 'review_detail'
@@ -729,14 +1231,14 @@ class ReviewListView(BaseListView):
 
 class ReviewDetailView(DetailView):
     model = Review
-    template_name = 'hotel_booking/review_detail.html'
+    template_name = 'review_detail.html'
     context_object_name = 'review'
 
 
 class ReviewCreateView(BaseCreateView):
     model = Review
     form_class = ReviewForm
-    template_name = 'hotel_booking/review_form.html'
+    template_name = 'review_form.html'
     cancel_url = reverse_lazy('review_list')
     form_title = 'Создание отзыва'
 
@@ -770,7 +1272,7 @@ class ReviewCreateView(BaseCreateView):
 class ReviewUpdateView(BaseUpdateView):
     model = Review
     form_class = ReviewForm
-    template_name = 'hotel_booking/review_form.html'
+    template_name = 'review_form.html'
     success_url = reverse_lazy('review_list')
     cancel_url = reverse_lazy('review_list')
     form_title = 'Редактирование отзыва'
@@ -778,7 +1280,7 @@ class ReviewUpdateView(BaseUpdateView):
 
 class ReviewDeleteView(BaseDeleteView):
     model = Review
-    template_name = 'hotel_booking/review_confirm_delete.html'
+    template_name = 'review_confirm_delete.html'
     success_url = reverse_lazy('review_list')
     cancel_url = reverse_lazy('review_list')
 
@@ -787,7 +1289,7 @@ class ReviewDeleteView(BaseDeleteView):
 
 class PaymentListView(BaseListView):
     model = Payment
-    template_name = 'hotel_booking/payment_list.html'
+    template_name = 'payment_list.html'
     title = 'Платежи'
     create_url = None
     detail_url_name = 'payment_detail'
@@ -808,14 +1310,14 @@ class PaymentListView(BaseListView):
 
 class PaymentDetailView(DetailView):
     model = Payment
-    template_name = 'hotel_booking/payment_detail.html'
+    template_name = 'payment_detail.html'
     context_object_name = 'payment'
 
 
 class PaymentCreateView(BaseCreateView):
     model = Payment
     form_class = PaymentForm
-    template_name = 'hotel_booking/payment_form.html'
+    template_name = 'payment_form.html'
     cancel_url = reverse_lazy('payment_list')
     form_title = 'Создание платежа'
 
@@ -848,7 +1350,7 @@ class PaymentCreateView(BaseCreateView):
 class PaymentUpdateView(BaseUpdateView):
     model = Payment
     form_class = PaymentForm
-    template_name = 'hotel_booking/payment_form.html'
+    template_name = 'payment_form.html'
     success_url = reverse_lazy('payment_list')
     cancel_url = reverse_lazy('payment_list')
     form_title = 'Редактирование платежа'
@@ -856,6 +1358,240 @@ class PaymentUpdateView(BaseUpdateView):
 
 class PaymentDeleteView(BaseDeleteView):
     model = Payment
-    template_name = 'hotel_booking/payment_confirm_delete.html'
+    template_name = 'payment_confirm_delete.html'
     success_url = reverse_lazy('payment_list')
     cancel_url = reverse_lazy('payment_list')
+
+
+# ========== Настройки профиля ==========
+
+@login_required
+def profile_edit_view(request):
+    """Редактирование профиля пользователя"""
+    try:
+        guest = request.user.guest_profile
+    except Guest.DoesNotExist:
+        guest = Guest.objects.create(user=request.user)
+
+    if request.method == 'POST':
+        user_form = UserProfileForm(request.POST, instance=request.user)
+        guest_form = GuestProfileForm(request.POST, request.FILES, instance=guest)
+
+        if user_form.is_valid() and guest_form.is_valid():
+            user_form.save()
+            guest_form.save()
+            messages.success(request, 'Профиль успешно обновлен!')
+            return redirect('profile_edit')
+        else:
+            messages.error(request, 'Пожалуйста, исправьте ошибки в форме.')
+    else:
+        user_form = UserProfileForm(instance=request.user)
+        guest_form = GuestProfileForm(instance=guest)
+
+    context = {
+        'user_form': user_form,
+        'guest_form': guest_form,
+        'guest': guest,
+        'active_tab': 'profile',
+    }
+
+    return render(request, 'profile_settings.html', context)
+
+
+@login_required
+def profile_security_view(request):
+    """Настройки безопасности (смена пароля)"""
+    from .forms import CustomPasswordChangeForm
+
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Обновляем сессию, чтобы пользователь не разлогинился
+            from django.contrib.auth import update_session_auth_hash
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Пароль успешно изменен!')
+            return redirect('profile_security')
+        else:
+            for error in form.errors.values():
+                messages.error(request, error)
+    else:
+        form = CustomPasswordChangeForm(request.user)
+
+    context = {
+        'form': form,
+        'active_tab': 'security',
+    }
+
+    return render(request, 'profile_settings.html', context)
+
+
+@login_required
+def profile_notifications_view(request):
+    """Настройки уведомлений"""
+    if request.method == 'POST':
+        # Сохраняем настройки уведомлений в сессию или в модель
+        request.session['email_notifications'] = request.POST.get('email_notifications') == 'on'
+        request.session['booking_reminders'] = request.POST.get('booking_reminders') == 'on'
+        request.session['promo_offers'] = request.POST.get('promo_offers') == 'on'
+        messages.success(request, 'Настройки уведомлений сохранены!')
+        return redirect('profile_notifications')
+
+    context = {
+        'active_tab': 'notifications',
+        'email_notifications': request.session.get('email_notifications', True),
+        'booking_reminders': request.session.get('booking_reminders', True),
+        'promo_offers': request.session.get('promo_offers', False),
+    }
+
+    return render(request, 'profile_settings.html', context)
+
+
+# ========== Мои бронирования (расширенная версия) ==========
+
+@login_required
+def my_bookings_view(request):
+    """Страница с бронированиями пользователя"""
+    try:
+        guest = request.user.guest_profile
+    except Guest.DoesNotExist:
+        guest = Guest.objects.create(user=request.user)
+
+    # Получаем параметры фильтрации
+    status_filter = request.GET.get('status', 'all')
+    sort_by = request.GET.get('sort', '-created_at')
+
+    bookings = Booking.objects.filter(guest=guest)
+
+    # Применяем фильтр по статусу
+    if status_filter == 'upcoming':
+        bookings = bookings.filter(
+            check_in_date__gte=timezone.now().date(),
+            status__in=['pending', 'confirmed']
+        )
+    elif status_filter == 'current':
+        bookings = bookings.filter(
+            check_in_date__lte=timezone.now().date(),
+            check_out_date__gte=timezone.now().date(),
+            status__in=['confirmed', 'checked_in']
+        )
+    elif status_filter == 'past':
+        bookings = bookings.filter(check_out_date__lt=timezone.now().date())
+    elif status_filter == 'cancelled':
+        bookings = bookings.filter(status='cancelled')
+    elif status_filter != 'all':
+        bookings = bookings.filter(status=status_filter)
+
+    # Применяем сортировку
+    if sort_by == 'date_asc':
+        bookings = bookings.order_by('check_in_date')
+    elif sort_by == 'date_desc':
+        bookings = bookings.order_by('-check_in_date')
+    elif sort_by == 'price_asc':
+        bookings = bookings.order_by('total_price')
+    elif sort_by == 'price_desc':
+        bookings = bookings.order_by('-total_price')
+    else:
+        bookings = bookings.order_by('-created_at')
+
+    # Пагинация
+    from django.core.paginator import Paginator
+    paginator = Paginator(bookings, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Статистика по бронированиям
+    stats = {
+        'total': Booking.objects.filter(guest=guest).count(),
+        'active': Booking.objects.filter(guest=guest, status__in=['pending', 'confirmed', 'checked_in']).count(),
+        'completed': Booking.objects.filter(guest=guest, status='checked_out').count(),
+        'cancelled': Booking.objects.filter(guest=guest, status='cancelled').count(),
+    }
+
+    context = {
+        'page_obj': page_obj,
+        'current_filter': status_filter,
+        'current_sort': sort_by,
+        'stats': stats,
+        'guest': guest,
+    }
+
+    return render(request, 'my_bookings.html', context)
+
+
+@login_required
+def booking_cancel_request(request, booking_id):
+    """Запрос на отмену бронирования"""
+    booking = get_object_or_404(Booking, id=booking_id)
+
+    # Проверяем, что бронирование принадлежит текущему пользователю
+    try:
+        if booking.guest.user != request.user:
+            messages.error(request, 'У вас нет прав для отмены этого бронирования.')
+            return redirect('my_bookings')
+    except AttributeError:
+        messages.error(request, 'Ошибка доступа.')
+        return redirect('my_bookings')
+
+    # Проверяем, можно ли отменить
+    if booking.status in ['checked_in', 'checked_out']:
+        messages.error(request, 'Невозможно отменить бронирование, так как вы уже заселены или выселены.')
+    elif booking.status == 'cancelled':
+        messages.info(request, 'Бронирование уже отменено.')
+    else:
+        booking.status = 'cancelled'
+        booking.save()
+        messages.success(request, f'Бронирование #{booking.id} успешно отменено.')
+
+    return redirect('my_bookings')
+
+
+@login_required
+def booking_rebook_view(request, booking_id):
+    """Повторное бронирование (создание нового на основе старого)"""
+    old_booking = get_object_or_404(Booking, id=booking_id)
+
+    try:
+        if old_booking.guest.user != request.user:
+            messages.error(request, 'У вас нет прав для этого действия.')
+            return redirect('my_bookings')
+    except AttributeError:
+        messages.error(request, 'Ошибка доступа.')
+        return redirect('my_bookings')
+
+    # Сохраняем данные в сессию для предзаполнения формы
+    request.session['rebook_data'] = {
+        'hotel_id': old_booking.room.hotel.id,
+        'room_id': old_booking.room.id,
+        'check_in': str(old_booking.check_in_date),
+        'check_out': str(old_booking.check_out_date),
+    }
+
+    messages.info(request, 'Выберите новые даты для повторного бронирования.')
+    return redirect('booking_checkout')
+
+
+@login_required
+def booking_add_review(request, booking_id):
+    """Добавить отзыв на завершенное бронирование"""
+    booking = get_object_or_404(Booking, id=booking_id)
+
+    try:
+        if booking.guest.user != request.user:
+            messages.error(request, 'У вас нет прав для этого действия.')
+            return redirect('my_bookings')
+    except AttributeError:
+        messages.error(request, 'Ошибка доступа.')
+        return redirect('my_bookings')
+
+    # Проверяем, что бронирование завершено
+    if booking.status != 'checked_out':
+        messages.warning(request, 'Вы можете оставить отзыв только после выезда из отеля.')
+        return redirect('my_bookings')
+
+    # Проверяем, нет ли уже отзыва
+    if Review.objects.filter(guest=booking.guest, hotel=booking.room.hotel).exists():
+        messages.warning(request, 'Вы уже оставляли отзыв на этот отель.')
+        return redirect('my_bookings')
+
+    return redirect('review_create', hotel_id=booking.room.hotel.id)

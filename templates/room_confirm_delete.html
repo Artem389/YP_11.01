@@ -1,0 +1,162 @@
+{% extends 'base_confirm_delete.html' %}
+
+{% block content %}
+<div class="delete-container">
+    <h2>Подтверждение удаления номера</h2>
+
+    <div class="delete-warning">
+        <p>Вы уверены, что хотите удалить номер?</p>
+        <div class="object-details">
+            <strong>Отель:</strong> {{ object.hotel.name }}<br>
+            <strong>Номер:</strong> {{ object.room_number }}<br>
+            <strong>Тип:</strong> {{ object.get_room_type_display }}<br>
+            <strong>Цена за ночь:</strong> {{ object.price_per_night }} руб.
+        </div>
+
+        {% if cannot_delete %}
+            <div class="error-message">
+                <strong>{{ warning_message }}</strong>
+            </div>
+
+            {% if active_bookings %}
+                <div class="active-bookings">
+                    <h4>Активные бронирования:</h4>
+                    <ul>
+                        {% for booking in active_bookings %}
+                            <li>
+                                Бронь #{{ booking.id }} -
+                                {{ booking.guest.user.username }} -
+                                {{ booking.check_in_date|date:"d.m.Y" }} –
+                                {{ booking.check_out_date|date:"d.m.Y" }} -
+                                Статус: {{ booking.get_status_display }}
+                                <a href="{% url 'booking_detail' booking.id %}" class="booking-link">Перейти к бронированию</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="warning-message">
+                {{ warning_message }}
+            </div>
+        {% endif %}
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="delete-actions">
+            {% if cannot_delete %}
+                <a href="{% url 'room_detail' object.id %}" class="button cancel">Вернуться к номеру</a>
+                <a href="{% url 'room_list' %}" class="button">К списку номеров</a>
+            {% else %}
+                <button type="submit" class="button delete">Да, удалить номер</button>
+                <a href="{% url 'room_detail' object.id %}" class="button cancel">Нет, отмена</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<style>
+    .delete-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .delete-warning {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+    .object-details {
+        background-color: #e9ecef;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 15px 0;
+        line-height: 1.6;
+    }
+    .error-message {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 5px;
+        padding: 15px;
+        margin: 15px 0;
+        color: #721c24;
+    }
+    .warning-message {
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        border-radius: 5px;
+        padding: 15px;
+        margin: 15px 0;
+        color: #856404;
+    }
+    .active-bookings {
+        background-color: white;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 15px;
+        margin-top: 15px;
+    }
+    .active-bookings h4 {
+        margin-bottom: 10px;
+        color: #dc3545;
+    }
+    .active-bookings ul {
+        list-style: none;
+        padding-left: 0;
+    }
+    .active-bookings li {
+        padding: 8px;
+        margin-bottom: 5px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .booking-link {
+        margin-left: 15px;
+        color: #007bff;
+        text-decoration: none;
+        font-size: 12px;
+    }
+    .booking-link:hover {
+        text-decoration: underline;
+    }
+    .delete-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 14px;
+    }
+    .button.delete {
+        background-color: #dc3545;
+        color: white;
+    }
+    .button.delete:hover {
+        background-color: #c82333;
+    }
+    .button.cancel {
+        background-color: #6c757d;
+        color: white;
+    }
+    .button.cancel:hover {
+        background-color: #5a6268;
+    }
+    .button {
+        background-color: #007bff;
+        color: white;
+    }
+    .button:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock %}

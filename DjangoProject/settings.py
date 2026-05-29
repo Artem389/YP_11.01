@@ -1,3 +1,5 @@
+# DjangoProject/settings.py
+
 import os
 from decouple import config
 from pathlib import Path
@@ -32,11 +34,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'DjangoProject.urls'
 
+# Настройка шаблонов - ВАЖНО: добавляем корневую папку templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [BASE_DIR / 'templates'],  # Добавляем корневую папку templates
+        'APP_DIRS': True,  # Django также будет искать в app/templates/
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -83,14 +86,14 @@ TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 USE_TZ = True
 
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-STATIC_URL = 'static/'
-# STATICFILES_DIRS = [BASE_DIR / 'static']
+# Настройка статических файлов
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']  # Добавляем корневую папку static
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 LOGGING = {

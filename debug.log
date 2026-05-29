@@ -318,3 +318,1098 @@ Watching for file changes with StatReloader
 Watching for file changes with StatReloader
 "GET / HTTP/1.1" 200 7156
 "GET /hotels/2/ HTTP/1.1" 200 3151
+"GET /hotels/ HTTP/1.1" 200 10894
+"GET /hotels/create/ HTTP/1.1" 200 6978
+"POST /hotels/create/ HTTP/1.1" 302 0
+"GET /hotels/ HTTP/1.1" 200 11793
+"GET /services/ HTTP/1.1" 200 13366
+"GET /services/create/ HTTP/1.1" 200 6261
+"GET /hotels/ HTTP/1.1" 200 11606
+"GET /hotels/create/ HTTP/1.1" 200 6978
+"GET /hotels/ HTTP/1.1" 200 11606
+"GET /hotels/1/update/ HTTP/1.1" 200 7258
+"GET /hotels/ HTTP/1.1" 200 11606
+"GET /hotels/1/ HTTP/1.1" 200 3154
+"GET /hotels/1/delete/ HTTP/1.1" 200 3895
+"GET /hotels/ HTTP/1.1" 200 11606
+"GET /payments/ HTTP/1.1" 200 11261
+"GET / HTTP/1.1" 200 7156
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 15281
+"GET / HTTP/1.1" 200 15281
+"GET /hotels/ HTTP/1.1" 200 16879
+"GET /hotels/8/update/ HTTP/1.1" 200 12355
+"GET /hotels/ HTTP/1.1" 200 16879
+"GET /hotels/9/ HTTP/1.1" 200 8252
+"GET /hotels/ HTTP/1.1" 200 16879
+"GET /bookings/ HTTP/1.1" 200 20063
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 15338
+"GET / HTTP/1.1" 200 15338
+"GET /bookings/ HTTP/1.1" 200 20120
+"GET /register/ HTTP/1.1" 200 12261
+"GET /login/ HTTP/1.1" 200 9896
+"POST /login/ HTTP/1.1" 200 10134
+"POST /login/ HTTP/1.1" 200 10134
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 12425
+"GET /hotels/search/ HTTP/1.1" 200 17614
+"GET /bookings/ HTTP/1.1" 200 20165
+"GET /rooms/ HTTP/1.1" 200 23148
+"GET /hotels/ HTTP/1.1" 200 16981
+"GET / HTTP/1.1" 200 15383
+"GET /dashboard/ HTTP/1.1" 200 12233
+Internal Server Error: /my-bookings/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\My_file\Python\Lib\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 655, in my_bookings_view
+    return render(request, 'hotel_booking/my_bookings.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: hotel_booking/my_bookings.html
+"GET /my-bookings/ HTTP/1.1" 500 98273
+"GET /favorites/ HTTP/1.1" 200 9783
+Internal Server Error: /profile/edit/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\My_file\Python\Lib\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 302, in profile_edit_view
+    return render(request, 'hotel_booking/profile_edit.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: hotel_booking/profile_edit.html
+"GET /profile/edit/ HTTP/1.1" 500 99008
+"GET /dashboard/ HTTP/1.1" 200 12233
+Internal Server Error: /my-bookings/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\My_file\Python\Lib\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 655, in my_bookings_view
+    return render(request, 'hotel_booking/my_bookings.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: hotel_booking/my_bookings.html
+"GET /my-bookings/ HTTP/1.1" 500 98273
+Internal Server Error: /profile/edit/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\My_file\Python\Lib\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 302, in profile_edit_view
+    return render(request, 'hotel_booking/profile_edit.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: hotel_booking/profile_edit.html
+"GET /profile/edit/ HTTP/1.1" 500 99008
+"GET /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 15528
+"GET /login/ HTTP/1.1" 200 9896
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 12425
+Watching for file changes with StatReloader
+"GET /dashboard/ HTTP/1.1" 200 12243
+"GET /favorites/ HTTP/1.1" 200 9793
+E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\forms.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 15473
+"GET /dashboard/ HTTP/1.1" 200 12323
+"GET /my-bookings/ HTTP/1.1" 200 16325
+"GET /hotels/search/ HTTP/1.1" 200 17704
+"GET / HTTP/1.1" 200 15473
+"GET /dashboard/ HTTP/1.1" 200 12323
+"GET /profile/edit/ HTTP/1.1" 200 15051
+"GET /profile/security/ HTTP/1.1" 200 14072
+"GET /profile/notifications/ HTTP/1.1" 200 14706
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Error in home view: base.html
+Error in home view: base.html
+Internal Server Error: /
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 670, in home
+    return render(request, 'hotel_booking/home.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 674, in home
+    return render(request, 'hotel_booking/home.html', {})
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: base.html
+"GET / HTTP/1.1" 500 205525
+Watching for file changes with StatReloader
+Error in home view: base.html
+Error in home view: base.html
+Internal Server Error: /
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 670, in home
+    return render(request, 'hotel_booking/home.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 674, in home
+    return render(request, 'hotel_booking/home.html', {})
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: base.html
+"GET / HTTP/1.1" 500 205993
+Error in home view: base.html
+Error in home view: base.html
+Internal Server Error: /
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 670, in home
+    return render(request, 'hotel_booking/home.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 674, in home
+    return render(request, 'hotel_booking/home.html', {})
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: base.html
+"GET / HTTP/1.1" 500 205864
+Watching for file changes with StatReloader
+Error in home view: base.html
+Error in home view: base.html
+Internal Server Error: /
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 670, in home
+    return render(request, 'hotel_booking/home.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 674, in home
+    return render(request, 'hotel_booking/home.html', {})
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: base.html
+"GET / HTTP/1.1" 500 206006
+Internal Server Error: /profile/notifications/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 199, in render
+    template = context.template.engine.select_template(template_name)
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 214, in select_template
+    raise TemplateDoesNotExist(", ".join(not_found))
+django.template.exceptions.TemplateDoesNotExist: _inc/_header.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\My_file\Python\Lib\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 1447, in profile_notifications_view
+    return render(request, 'hotel_booking/profile_settings.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: _inc/_header.html
+"GET /profile/notifications/ HTTP/1.1" 500 156877
+Watching for file changes with StatReloader
+Error in home view: base.html
+Error in home view: base.html
+Internal Server Error: /
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 670, in home
+    return render(request, 'hotel_booking/home.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 674, in home
+    return render(request, 'hotel_booking/home.html', {})
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: base.html
+"GET / HTTP/1.1" 500 205700
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 7573
+Internal Server Error: /hotels/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "E:\My_file\Python\Lib\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "E:\My_file\Python\Lib\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: hotel_booking/hotel_list.html, hotel_booking/hotel_list.html
+"GET /hotels/ HTTP/1.1" 500 94375
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 5931
+"GET / HTTP/1.1" 200 5931
+Internal Server Error: /hotels/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: hotel_booking/templates/hotel_booking/base_list.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "E:\My_file\Python\Lib\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: hotel_booking/templates/hotel_booking/base_list.html
+"GET /hotels/ HTTP/1.1" 500 149546
+Watching for file changes with StatReloader
+Internal Server Error: /hotels/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: hotel_booking/templates/hotel_booking/base_list.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "E:\My_file\Python\Lib\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: hotel_booking/templates/hotel_booking/base_list.html
+"GET /hotels/ HTTP/1.1" 500 149683
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 2802
+Internal Server Error: /hotels/search/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: hotel_booking/templates/hotel_booking/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 367, in hotel_search_view
+    return render(request, 'hotel_search.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: hotel_booking/templates/hotel_booking/base.html
+"GET /hotels/search/ HTTP/1.1" 500 144315
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 2802
+Internal Server Error: /hotels/search/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: hotel_booking/templates/hotel_booking/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 367, in hotel_search_view
+    return render(request, 'hotel_search.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: hotel_booking/templates/hotel_booking/base.html
+"GET /hotels/search/ HTTP/1.1" 500 143582
+Internal Server Error: /hotels/search/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: hotel_booking/templates/hotel_booking/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 367, in hotel_search_view
+    return render(request, 'hotel_search.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: hotel_booking/templates/hotel_booking/base.html
+"GET /hotels/search/ HTTP/1.1" 500 142151
+"GET /booking/checkout/ HTTP/1.1" 302 0
+Not Found: /accounts/login/
+"GET /accounts/login/?next=/booking/checkout/ HTTP/1.1" 404 18031
+"GET /bookings/ HTTP/1.1" 200 15233
+"GET /favorites/ HTTP/1.1" 302 0
+Not Found: /accounts/login/
+"GET /accounts/login/?next=/favorites/ HTTP/1.1" 404 18024
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 2802
+"GET /hotels/search/ HTTP/1.1" 200 12688
+"GET / HTTP/1.1" 200 2802
+"GET /dashboard/ HTTP/1.1" 200 2748
+"GET /rooms/ HTTP/1.1" 200 18203
+"GET / HTTP/1.1" 200 2802
+"GET /hotels/ HTTP/1.1" 200 6068
+"GET /rooms/ HTTP/1.1" 200 18203
+"GET /hotels/search/ HTTP/1.1" 200 12688
+"GET /dashboard/ HTTP/1.1" 200 2748
+"GET / HTTP/1.1" 200 2802
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 4817
+"GET /guests/ HTTP/1.1" 200 12276
+"GET /reviews/ HTTP/1.1" 200 13592
+"GET / HTTP/1.1" 200 4817
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 5000
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 5227
+"GET / HTTP/1.1" 200 5227
+"GET / HTTP/1.1" 200 5227
+"GET /hotels/search/ HTTP/1.1" 200 15113
+"GET /profile/edit/ HTTP/1.1" 200 12460
+"GET / HTTP/1.1" 200 5227
+"GET /hotels/search/ HTTP/1.1" 200 15113
+"GET /dashboard/ HTTP/1.1" 200 5173
+"GET /hotels/ HTTP/1.1" 200 8493

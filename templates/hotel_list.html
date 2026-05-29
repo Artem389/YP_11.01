@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Отели</h1>
+<a href="{% url 'hotel_create' %}" class="btn btn-success mb-3">Добавить отель</a>
+
+<div class="row">
+    {% for hotel in page_obj %}
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ hotel.name }}</h5>
+                <p class="card-text">{{ hotel.address|truncatechars:50 }}</p>
+                <p>⭐ {{ hotel.stars }} звезд</p>
+                <a href="{% url 'hotel_detail' hotel.id %}" class="btn btn-primary">Подробнее</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>Нет отелей</p>
+    {% endfor %}
+</div>
+{% include '_inc/_pagination.html' %}
+{% endblock %}

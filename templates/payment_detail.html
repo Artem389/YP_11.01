@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Платеж N{{ payment.id }}</h2>
+
+<div class="payment-container">
+    <div class="payment-info">
+        <h3>Информация о платеже</h3>
+        <p><strong>Сумма:</strong> {{ payment.amount }} руб.</p>
+        <p><strong>Способ оплаты:</strong> {{ payment.get_payment_method_display }}</p>
+        <p><strong>Статус:</strong>
+            <span class="status status-{{ payment.status }}">
+                {{ payment.get_status_display }}
+            </span>
+        </p>
+        <p><strong>ID транзакции:</strong> {{ payment.transaction_id|default:"Не указан" }}</p>
+        <p><strong>Дата оплаты:</strong> {{ payment.payment_date|default:"Не оплачено"|date:"d.m.Y H:i" }}</p>
+        <p><strong>Дата создания:</strong> {{ payment.created_at|date:"d.m.Y H:i" }}</p>
+    </div>
+
+    <div class="booking-info">
+        <h3>Информация о бронировании</h3>
+        <p><strong>Бронирование:</strong> <a href="{% url 'booking_detail' payment.booking.id %}">N{{ payment.booking.id }}</a></p>
+        <p><strong>Гость:</strong> {{ payment.booking.guest.user.username }}</p>
+        <p><strong>Отель:</strong> {{ payment.booking.room.hotel.name }}</p>
+        <p><strong>Номер:</strong> {{ payment.booking.room.room_number }}</p>
+        <p><strong>Даты:</strong> {{ payment.booking.check_in_date }} - {{ payment.booking.check_out_date }}</p>
+    </div>
+</div>
+
+<div style="margin-top: 20px;">
+    <a href="{% url 'payment_update' payment.id %}" class="button">Редактировать</a>
+    <a href="{% url 'payment_delete' payment.id %}" class="button delete">Удалить</a>
+    <a href="{% url 'payment_list' %}">Назад к списку</a>
+</div>
+
+<style>
+    .payment-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin: 20px 0;
+    }
+    .payment-info, .booking-info {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 20px;
+    }
+    .payment-info h3, .booking-info h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: #333;
+    }
+    .payment-info p, .booking-info p {
+        margin-bottom: 10px;
+    }
+    .status {
+        font-weight: bold;
+        padding: 2px 8px;
+        border-radius: 3px;
+    }
+    .status-pending {
+        background-color: #ffc107;
+        color: #856404;
+    }
+    .status-paid {
+        background-color: #28a745;
+        color: white;
+    }
+    .status-failed {
+        background-color: #dc3545;
+        color: white;
+    }
+    .status-refunded {
+        background-color: #6c757d;
+        color: white;
+    }
+    .button.delete {
+        background-color: #dc3545;
+    }
+    @media (max-width: 768px) {
+        .payment-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,91 @@
+<!-- Новый файл: hotel_booking/favorites.html - Страница избранного -->
+{% extends 'base.html' %}
+{% block title %}Избранное{% endblock %}
+
+{% block extra_css %}
+<style>
+    .favorites-header {
+        margin-bottom: 2rem;
+    }
+
+    .favorites-header h1 {
+        margin-bottom: 0.5rem;
+    }
+
+    .favorites-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+
+    .favorite-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        position: relative;
+    }
+
+    .remove-favorite {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .remove-favorite:hover {
+        background: #dc3545;
+        color: white;
+    }
+
+    .empty-favorites {
+        text-align: center;
+        padding: 4rem;
+        background: white;
+        border-radius: 15px;
+    }
+
+    .empty-favorites p {
+        color: #666;
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="favorites-header">
+    <h1>Избранное</h1>
+    <p>Сохраненные отели и номера</p>
+</div>
+
+<div class="favorites-grid">
+    <div class="favorite-card">
+        <div class="remove-favorite">✕</div>
+        <div style="height: 180px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+        <div style="padding: 1.5rem;">
+            <h3>Grand Plaza Hotel Moscow</h3>
+            <div style="color: #ffc107;">★★★★★</div>
+            <div style="color: #666; margin: 0.5rem 0;">📍 Москва, центр</div>
+            <div style="margin: 1rem 0;">от 8 500 руб/ночь</div>
+            <a href="#" style="display: inline-block; padding: 0.5rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 25px;">Забронировать</a>
+        </div>
+    </div>
+</div>
+
+<!-- Empty state -->
+<!--
+<div class="empty-favorites">
+    <p>У вас пока нет избранных отелей</p>
+    <a href="#" class="btn-view">Найти отели</a>
+</div>
+-->
+{% endblock %}

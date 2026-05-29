@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ hotel.name }}</h1>
+<p><strong>Адрес:</strong> {{ hotel.address }}</p>
+<p><strong>Звезд:</strong> {{ hotel.stars }}</p>
+<p><strong>Телефон:</strong> {{ hotel.phone|default:"-" }}</p>
+<p><strong>Email:</strong> {{ hotel.email|default:"-" }}</p>
+<p><strong>Описание:</strong> {{ hotel.description|default:"-" }}</p>
+
+<a href="{% url 'hotel_update' hotel.id %}" class="btn btn-warning">Редактировать</a>
+<a href="{% url 'hotel_delete' hotel.id %}" class="btn btn-danger">Удалить</a>
+<a href="{% url 'hotel_list' %}" class="btn btn-secondary">Назад</a>
+{% endblock %}

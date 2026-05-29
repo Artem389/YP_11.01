@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="delete-container">
+    <h2>Подтверждение удаления</h2>
+
+    <div class="delete-warning">
+        <p>Вы уверены, что хотите удалить?</p>
+        <div class="object-details">
+            <strong>{{ object_name }}:</strong> {{ object_repr }}
+        </div>
+        {% if warning_message %}
+        <div class="warning-message">{{ warning_message }}</div>
+        {% endif %}
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="delete-actions">
+            <button type="submit" class="button delete">Да, удалить</button>
+            <a href="{{ cancel_url }}" class="button cancel">Нет, отмена</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .delete-container {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .delete-warning {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+    .object-details {
+        background-color: white;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 15px 0;
+    }
+    .warning-message {
+        color: #dc3545;
+        margin-top: 15px;
+        font-size: 14px;
+    }
+    .delete-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    .button.delete {
+        background-color: #dc3545;
+    }
+    .button.cancel {
+        background-color: #6c757d;
+    }
+</style>
+{% endblock %}

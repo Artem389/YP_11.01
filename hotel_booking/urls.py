@@ -1,10 +1,34 @@
+# urls.py (внутри hotel_booking)
+
 from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Главная и аутентификация
     path('', views.home, name='home'),
+    path('register/', views.register_view, name='register'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
 
-    # Hotels
+    # Личный кабинет
+    path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('profile/edit/', views.profile_edit_view, name='profile_edit'),
+    path('my-bookings/', views.my_bookings_view, name='my_bookings'),
+
+    # Поиск и фильтрация
+    path('hotels/search/', views.hotel_search_view, name='hotel_search'),
+    path('hotels/compare/', views.hotel_comparison_view, name='hotel_comparison'),
+
+    # Избранное
+    path('favorites/', views.favorites_view, name='favorites'),
+    path('favorites/add/<int:hotel_id>/', views.add_favorite, name='add_favorite'),
+    path('favorites/remove/<int:favorite_id>/', views.remove_favorite, name='remove_favorite'),
+
+    # Оформление бронирования
+    path('booking/checkout/', views.booking_checkout_view, name='booking_checkout'),
+    path('booking/checkout/<int:hotel_id>/', views.booking_checkout_view, name='booking_checkout_hotel'),
+
+    # Существующие маршруты для CRUD
     path('hotels/', views.HotelListView.as_view(), name='hotel_list'),
     path('hotels/<int:pk>/', views.HotelDetailView.as_view(), name='hotel_detail'),
     path('hotels/create/', views.HotelCreateView.as_view(), name='hotel_create'),
@@ -52,4 +76,15 @@ urlpatterns = [
     path('payments/create/<int:booking_id>/', views.PaymentCreateView.as_view(), name='payment_create'),
     path('payments/<int:pk>/update/', views.PaymentUpdateView.as_view(), name='payment_update'),
     path('payments/<int:pk>/delete/', views.PaymentDeleteView.as_view(), name='payment_delete'),
+
+    # Настройки профиля
+    path('profile/edit/', views.profile_edit_view, name='profile_edit'),
+    path('profile/security/', views.profile_security_view, name='profile_security'),
+    path('profile/notifications/', views.profile_notifications_view, name='profile_notifications'),
+
+    # Мои бронирования (дополнительные действия)
+    path('my-bookings/', views.my_bookings_view, name='my_bookings'),
+    path('booking/<int:booking_id>/cancel/', views.booking_cancel_request, name='booking_cancel'),
+    path('booking/<int:booking_id>/rebook/', views.booking_rebook_view, name='booking_rebook'),
+    path('booking/<int:booking_id>/add-review/', views.booking_add_review, name='booking_add_review'),
 ]

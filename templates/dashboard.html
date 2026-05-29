@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Личный кабинет</h1>
+<p>Добро пожаловать, {{ user.username }}!</p>
+<p>Бонусных баллов: {{ guest.loyalty_points }}</p>
+
+<h3>Ближайшие поездки</h3>
+<ul>
+    {% for booking in upcoming_bookings %}
+    <li>{{ booking.room.hotel.name }} - {{ booking.check_in_date }} до {{ booking.check_out_date }}</li>
+    {% empty %}
+    <li>Нет бронирований</li>
+    {% endfor %}
+</ul>
+{% endblock %}

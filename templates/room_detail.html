@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Номер {{ room.room_number }}</h2>
+<p><strong>Отель:</strong> <a href="{% url 'hotel_detail' room.hotel.id %}">{{ room.hotel.name }}</a></p>
+<p><strong>Тип:</strong> {{ room.get_room_type_display }}</p>
+<p><strong>Цена за ночь:</strong> {{ room.price_per_night }} руб.</p>
+<p><strong>Вместимость:</strong> {{ room.capacity }} чел.</p>
+<p><strong>Площадь:</strong> {{ room.square|default:"Не указана" }} кв.м</p>
+<p><strong>Доступен:</strong> {% if room.is_available %}Да{% else %}Нет{% endif %}</p>
+
+<h3>Удобства</h3>
+<ul>
+    {% if room.has_wifi %}<li>Wi-Fi</li>{% endif %}
+    {% if room.has_tv %}<li>Телевизор</li>{% endif %}
+    {% if room.has_air_conditioning %}<li>Кондиционер</li>{% endif %}
+</ul>
+
+{% if room.description %}
+<h3>Описание</h3>
+<p>{{ room.description }}</p>
+{% endif %}
+
+<h3>Бронирования этого номера</h3>
+<ul>
+    {% for booking in room.bookings.all|slice:":5" %}
+    <li>{{ booking.check_in_date }} - {{ booking.check_out_date }} ({{ booking.guest.user.username }})</li>
+    {% empty %}
+    <li>Нет бронирований</li>
+    {% endfor %}
+</ul>
+
+<div style="margin-top: 20px;">
+    <a href="{% url 'room_update' room.id %}" class="button">Редактировать</a>
+    <a href="{% url 'room_delete' room.id %}" class="button delete">Удалить</a>
+    <a href="{% url 'room_list' %}">Назад к списку</a>
+</div>
+
+<style>
+    .button.delete {
+        background-color: #dc3545;
+    }
+    .button.delete:hover {
+        background-color: #c82333;
+    }
+</style>
+{% endblock %}

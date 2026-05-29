@@ -1,0 +1,63 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">ОтельБук</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Основное меню -->
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">🏠 Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'hotel_search' %}">🔍 Поиск отелей</a>
+                </li>
+
+                <!-- Выпадающее меню "Управление" -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="manageDropdown" role="button" data-bs-toggle="dropdown">
+                        ⚙️ Управление
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'hotel_list' %}">🏨 Отели</a></li>
+                        <li><a class="dropdown-item" href="{% url 'room_list' %}">🛏️ Номера</a></li>
+                        <li><a class="dropdown-item" href="{% url 'service_list' %}">✨ Услуги</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'guest_list' %}">👥 Гости</a></li>
+                        <li><a class="dropdown-item" href="{% url 'booking_list' %}">📅 Бронирования</a></li>
+                        <li><a class="dropdown-item" href="{% url 'review_list' %}">⭐ Отзывы</a></li>
+                        <li><a class="dropdown-item" href="{% url 'payment_list' %}">💰 Платежи</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- Правая часть - пользователь -->
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            👤 {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'dashboard' %}">📊 Личный кабинет</a></li>
+                            <li><a class="dropdown-item" href="{% url 'my_bookings' %}">📋 Мои бронирования</a></li>
+                            <li><a class="dropdown-item" href="{% url 'favorites' %}">❤️ Избранное</a></li>
+                            <li><a class="dropdown-item" href="{% url 'profile_edit' %}">⚙️ Настройки</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">🚪 Выйти</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">🔑 Вход</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">📝 Регистрация</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
