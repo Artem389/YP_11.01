@@ -96,8 +96,15 @@ class Room(models.Model):
         ordering = ['hotel__name', 'room_number']
 
 
+# Добавьте это в модель Guest (в конец полей)
 class Guest(models.Model):
     """Модель гостя (расширение пользователя)"""
+    ROLE_CHOICES = [
+        ('guest', 'Гость'),
+        ('manager', 'Менеджер отеля'),
+        ('admin', 'Администратор'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='guest_profile',
                                 verbose_name="Пользователь")
     phone = models.CharField(max_length=20, verbose_name="Телефон", null=True, blank=True)
@@ -106,6 +113,10 @@ class Guest(models.Model):
     loyalty_points = models.IntegerField(default=0, verbose_name="Бонусные баллы")
     registration_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата регистрации")
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, verbose_name="Аватар")
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='guest')
+    managed_hotels = models.ManyToManyField('Hotel', blank=True, related_name='managers', verbose_name="Управляемые отели")
+
+
 
     def __str__(self):
         return f"{self.user.get_full_name() or self.user.username}"
@@ -125,6 +136,10 @@ class Guest(models.Model):
             self.save()
             return True
         return False
+
+    def has_role(self, role):
+        """Проверка роли"""
+        return self.role == role or self.role == 'admin'
 
     class Meta:
         verbose_name = "Гость"
@@ -264,3 +279,62 @@ class Payment(models.Model):
         verbose_name = "Платеж"
         verbose_name_plural = "Платежи"
         ordering = ['-created_at']
+
+
+# ========== Модели для корзины ==========
+
+class Cart(models.Model):
+    """Модель корзины"""
+    guest = models.OneToOneField(Guest, on_delete=models.CASCADE, related_name='cart', verbose_name="Гость")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+
+    def __str__(self):
+        return f"Корзина {self.guest.user.username}"
+
+    def get_total_price(self):
+        """Общая стоимость всех товаров в корзине"""
+        total = sum(item.get_total_price() for item in self.items.all())
+        return total
+
+    def get_items_count(self):
+        """Количество позиций в корзине"""
+        return self.items.count()
+
+    def clear(self):
+        """Очистить корзину"""
+        self.items.all().delete()
+
+    class Meta:
+        verbose_name = "Корзина"
+        verbose_name_plural = "Корзины"
+
+
+class CartItem(models.Model):
+    """Модель позиции в корзине (бронирование номера)"""
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items', verbose_name="Корзина")
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='cart_items', verbose_name="Номер")
+    check_in_date = models.DateField(verbose_name="Дата заезда")
+    check_out_date = models.DateField(verbose_name="Дата выезда")
+    guests_count = models.IntegerField(default=2, verbose_name="Количество гостей")
+    added_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления")
+
+    def __str__(self):
+        return f"{self.room.hotel.name} - {self.room.room_number}"
+
+    def get_nights(self):
+        """Количество ночей"""
+        return (self.check_out_date - self.check_in_date).days
+
+    def get_room_total(self):
+        """Стоимость номера за все ночи"""
+        return self.room.price_per_night * self.get_nights()
+
+    def get_total_price(self):
+        """Общая стоимость (пока только номер)"""
+        return self.get_room_total()
+
+    class Meta:
+        verbose_name = "Позиция корзины"
+        verbose_name_plural = "Позиции корзины"
+        unique_together = ['cart', 'room', 'check_in_date', 'check_out_date']

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Бронирование N{{ booking.id }}</h2>
+<h2>Бронирование №{{ booking.id }}</h2>
 
 <div class="info-block">
     <h3>Информация о госте</h3>
@@ -20,11 +20,15 @@
     <h3>Детали бронирования</h3>
     <p><strong>Дата заезда:</strong> {{ booking.check_in_date }}</p>
     <p><strong>Дата выезда:</strong> {{ booking.check_out_date }}</p>
-    <p><strong>Количество ночей:</strong> {{ booking.check_out_date|timeuntil:booking.check_in_date|cut:" " }}</p>
+    <p><strong>Количество ночей:</strong> {{ nights }}</p>
     <p><strong>Стоимость номера:</strong> {{ booking.room.price_per_night }} руб. x {{ nights }} = {{ room_total }} руб.</p>
     <p><strong>Дополнительные услуги:</strong> {{ services_total|default:"0" }} руб.</p>
     <p><strong>Итоговая сумма:</strong> {{ booking.total_price }} руб.</p>
-    <p><strong>Статус:</strong> {{ booking.get_status_display }}</p>
+    <p><strong>Статус:</strong>
+        <span class="status status-{{ booking.status }}">
+            {{ booking.get_status_display }}
+        </span>
+    </p>
 </div>
 
 {% if booking.special_requests %}
@@ -55,14 +59,24 @@
         <a href="{% url 'payment_detail' booking.payment.id %}" class="button">Подробнее о платеже</a>
     {% else %}
         <p>Платеж не создан</p>
-        <a href="{% url 'payment_create' booking.id %}" class="button">Создать платеж</a>
+        <!-- Кнопка создания платежа только для менеджера и админа -->
+        {% if user.is_authenticated and user.guest_profile.role in 'admin,manager' %}
+            <a href="{% url 'payment_create' booking.id %}" class="button payment-btn">💰 Создать платеж</a>
+        {% endif %}
     {% endif %}
 </div>
 
 <div style="margin-top: 20px;">
-    <a href="{% url 'booking_update' booking.id %}" class="button">Редактировать</a>
+    {% if user.is_authenticated and user.guest_profile.role in 'admin,manager' %}
+        <a href="{% url 'booking_update' booking.id %}" class="button">Редактировать</a>
+    {% endif %}
     <a href="{% url 'booking_delete' booking.id %}" class="button delete">Отменить бронирование</a>
-    <a href="{% url 'booking_list' %}">Назад к списку</a>
+
+    {% if user.is_authenticated and user.guest_profile.role == 'guest' %}
+        <a href="{% url 'my_bookings' %}" class="button">Мои бронирования</a>
+    {% else %}
+        <a href="{% url 'booking_list' %}" class="button">К списку бронирований</a>
+    {% endif %}
 </div>
 
 <style>
@@ -78,8 +92,43 @@
         margin-bottom: 15px;
         color: #333;
     }
+    .button {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+    .button:hover {
+        background-color: #0056b3;
+    }
     .button.delete {
         background-color: #dc3545;
     }
+    .button.delete:hover {
+        background-color: #c82333;
+    }
+    .payment-btn {
+        background-color: #28a745;
+    }
+    .payment-btn:hover {
+        background-color: #218838;
+    }
+    .status {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    .status-pending { background: #fff3cd; color: #856404; }
+    .status-confirmed { background: #d4edda; color: #155724; }
+    .status-checked_in { background: #cce5ff; color: #004085; }
+    .status-checked_out { background: #d1ecf1; color: #0c5460; }
+    .status-cancelled { background: #f8d7da; color: #721c24; }
 </style>
 {% endblock %}

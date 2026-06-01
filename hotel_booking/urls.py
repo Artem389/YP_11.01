@@ -87,4 +87,10 @@ urlpatterns = [
     path('booking/<int:booking_id>/cancel/', views.booking_cancel_request, name='booking_cancel'),
     path('booking/<int:booking_id>/rebook/', views.booking_rebook_view, name='booking_rebook'),
     path('booking/<int:booking_id>/add-review/', views.booking_add_review, name='booking_add_review'),
+
+# ========== Корзина ==========
+    path('cart/', views.cart_view, name='cart'),
+    path('cart/add/', views.add_to_cart, name='add_to_cart'),
+    path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('cart/checkout/', views.cart_checkout_view, name='cart_checkout'),
 ]

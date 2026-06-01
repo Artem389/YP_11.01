@@ -1,16 +1,80 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Личный кабинет</h1>
-<p>Добро пожаловать, {{ user.username }}!</p>
-<p>Бонусных баллов: {{ guest.loyalty_points }}</p>
+<div class="dashboard-header">
+    <h1>Личный кабинет</h1>
+    <div class="role-badge">
+        Ваша роль:
+        {% if guest.role == 'admin' %}
+            <span class="badge bg-danger">Администратор</span>
+        {% elif guest.role == 'manager' %}
+            <span class="badge bg-warning">Менеджер отеля</span>
+        {% else %}
+            <span class="badge bg-info">Гость</span>
+        {% endif %}
+    </div>
+</div>
 
-<h3>Ближайшие поездки</h3>
-<ul>
-    {% for booking in upcoming_bookings %}
-    <li>{{ booking.room.hotel.name }} - {{ booking.check_in_date }} до {{ booking.check_out_date }}</li>
-    {% empty %}
-    <li>Нет бронирований</li>
-    {% endfor %}
-</ul>
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="info-card">
+            <h3>Профиль</h3>
+            <p><strong>Пользователь:</strong> {{ user.username }}</p>
+            <p><strong>Имя:</strong> {{ user.get_full_name|default:"Не указано" }}</p>
+            <p><strong>Email:</strong> {{ user.email|default:"Не указан" }}</p>
+            <p><strong>Телефон:</strong> {{ guest.phone|default:"Не указан" }}</p>
+            <a href="{% url 'profile_edit' %}" class="btn btn-sm btn-outline-primary">Редактировать</a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="info-card">
+            <h3>Статистика</h3>
+            <p><strong>Бонусных баллов:</strong> {{ guest.loyalty_points }}</p>
+            <p><strong>Активных бронирований:</strong> {{ active_bookings }}</p>
+            <p><strong>Завершенных бронирований:</strong> {{ completed_bookings }}</p>
+            <p><strong>Отзывов:</strong> {{ reviews_count }}</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="info-card">
+            <h3>Ближайшие поездки</h3>
+            {% if upcoming_bookings %}
+                {% for booking in upcoming_bookings %}
+                <div class="upcoming-item">
+                    <strong>{{ booking.room.hotel.name }}</strong><br>
+                    {{ booking.check_in_date|date:"d.m.Y" }} - {{ booking.check_out_date|date:"d.m.Y" }}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>Нет предстоящих бронирований</p>
+            {% endif %}
+            <a href="{% url 'hotel_search' %}" class="btn btn-sm btn-success mt-2">Найти отель</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .info-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .upcoming-item {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #eee;
+    }
+    .upcoming-item:last-child {
+        border-bottom: none;
+    }
+</style>
 {% endblock %}

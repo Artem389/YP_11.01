@@ -9,6 +9,11 @@ from django.utils import timezone
 from .models import Hotel, Room, Guest, Service, Booking, Review, Payment
 from .forms import HotelForm, RoomForm, GuestForm, ServiceForm, BookingForm, ReviewForm, PaymentForm
 import logging
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.http import require_http_methods
+from .forms import AddToCartForm, CartItemUpdateForm, OrderCheckoutForm
+from .models import Cart, CartItem
+from django.db.models import Sum
 
 logger = logging.getLogger(__name__)
 
@@ -306,46 +311,49 @@ def profile_edit_view(request):
 
 def hotel_search_view(request):
     """Страница поиска отелей"""
-    form = SearchForm(request.GET or None)
     hotels = Hotel.objects.all().annotate(
         avg_rating=Avg('reviews__rating'),
-        reviews_count=Count('reviews')
+        reviews_count=Count('reviews'),
+        min_price=Min('rooms__price_per_night')
     )
 
     # Применяем фильтры
-    if form.is_valid():
-        data = form.cleaned_data
+    destination = request.GET.get('destination', '')
+    min_price = request.GET.get('min_price', '')
+    max_price = request.GET.get('max_price', '')
+    stars_list = request.GET.getlist('stars')
+    amenities_list = request.GET.getlist('amenities')
 
-        # Поиск по названию или адресу
-        if data.get('destination'):
-            hotels = hotels.filter(
-                Q(name__icontains=data['destination']) |
-                Q(address__icontains=data['destination'])
-            )
+    # Поиск по названию или адресу
+    if destination:
+        hotels = hotels.filter(
+            Q(name__icontains=destination) |
+            Q(address__icontains=destination)
+        )
 
-        # Фильтр по звездам
-        if data.get('stars'):
-            hotels = hotels.filter(stars__in=[int(s) for s in data['stars']])
+    # Фильтр по звездам
+    if stars_list:
+        stars_int = [int(s) for s in stars_list]
+        hotels = hotels.filter(stars__in=stars_int)
 
-        # Фильтр по цене (через комнаты)
-        if data.get('min_price'):
-            hotels = hotels.filter(rooms__price_per_night__gte=data['min_price'])
-        if data.get('max_price'):
-            hotels = hotels.filter(rooms__price_per_night__lte=data['max_price'])
+    # Фильтр по цене
+    if min_price:
+        hotels = hotels.filter(min_price__gte=min_price)
+    if max_price:
+        hotels = hotels.filter(min_price__lte=max_price)
 
-        # Фильтр по удобствам (через комнаты)
-        if data.get('amenities'):
-            if 'wifi' in data['amenities']:
-                hotels = hotels.filter(rooms__has_wifi=True)
-            if 'parking' in data['amenities']:
-                hotels = hotels.filter(services__name__icontains='парковка')
+    # Фильтр по удобствам
+    if 'wifi' in amenities_list:
+        hotels = hotels.filter(rooms__has_wifi=True)
+    if 'fitness' in amenities_list:
+        hotels = hotels.filter(services__name__icontains='фитнес')
 
     # Сортировка
     sort_by = request.GET.get('sort', 'popularity')
     if sort_by == 'price_asc':
-        hotels = hotels.annotate(min_price=Min('rooms__price_per_night')).order_by('min_price')
+        hotels = hotels.order_by('min_price')
     elif sort_by == 'price_desc':
-        hotels = hotels.annotate(min_price=Min('rooms__price_per_night')).order_by('-min_price')
+        hotels = hotels.order_by('-min_price')
     elif sort_by == 'rating':
         hotels = hotels.order_by('-avg_rating')
     else:  # popularity
@@ -358,14 +366,13 @@ def hotel_search_view(request):
     page_obj = paginator.get_page(page_number)
 
     context = {
-        'form': form,
         'page_obj': page_obj,
         'total_count': hotels.count(),
         'current_sort': sort_by,
+        'request': request,
     }
 
     return render(request, 'hotel_search.html', context)
-
 
 # ========== Избранное ==========
 
@@ -703,6 +710,12 @@ class HotelDetailView(DetailView):
     template_name = 'hotel_detail.html'
     context_object_name = 'hotel'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Добавляем комнаты отеля в контекст
+        context['rooms'] = self.object.rooms.filter(is_available=True)
+        return context
+
     def get_object(self, queryset=None):
         try:
             return super().get_object(queryset)
@@ -717,7 +730,7 @@ class HotelDetailView(DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object is None:
-            return redirect('hotel_list')
+            return redirect('hotel_search')
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
@@ -1093,6 +1106,23 @@ class BookingDetailView(DetailView):
     template_name = 'booking_detail.html'
     context_object_name = 'booking'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        booking = self.object
+
+        # Расчет количества ночей
+        nights = (booking.check_out_date - booking.check_in_date).days
+        room_total = booking.room.price_per_night * nights
+
+        # Расчет стоимости услуг - используем Sum без models.
+        services_total = booking.services.aggregate(total=Sum('price'))['total'] or 0
+
+        context['nights'] = nights
+        context['room_total'] = room_total
+        context['services_total'] = services_total
+
+        return context
+
     def get_object(self, queryset=None):
         try:
             return super().get_object(queryset)
@@ -1107,6 +1137,11 @@ class BookingDetailView(DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object is None:
+            # Перенаправляем в зависимости от роли
+            if hasattr(request.user, 'guest_profile'):
+                role = request.user.guest_profile.role
+                if role == 'guest':
+                    return redirect('my_bookings')
             return redirect('booking_list')
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
@@ -1171,14 +1206,20 @@ class BookingUpdateView(BaseUpdateView):
 class BookingDeleteView(BaseDeleteView):
     model = Booking
     template_name = 'booking_confirm_delete.html'
-    success_url = reverse_lazy('booking_list')
-    cancel_url = reverse_lazy('booking_list')
+    success_url = reverse_lazy('my_bookings')  # Перенаправляем на "Мои бронирования"
+    cancel_url = reverse_lazy('my_bookings')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['cancel_url'] = reverse_lazy('booking_list')
+        context['cancel_url'] = reverse_lazy('my_bookings')
         context['object_name'] = 'Бронирование'
         context['object_repr'] = f"Бронь #{self.object.id} - {self.object.guest.user.username}"
+
+        # Проверка для обычного пользователя
+        if hasattr(self.request.user, 'guest_profile'):
+            is_admin_or_manager = self.request.user.guest_profile.role in ['admin', 'manager']
+        else:
+            is_admin_or_manager = False
 
         if self.object.status in ['checked_in', 'checked_out']:
             context['cannot_delete'] = True
@@ -1192,7 +1233,7 @@ class BookingDeleteView(BaseDeleteView):
 
         return context
 
-    def post(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
 
         # Не удаляем, а меняем статус на cancelled
@@ -1203,10 +1244,16 @@ class BookingDeleteView(BaseDeleteView):
         else:
             messages.error(request, f'Невозможно отменить бронирование в статусе "{self.object.get_status_display()}".')
 
+        # Перенаправляем обычных пользователей на "Мои бронирования"
+        if hasattr(self.request.user, 'guest_profile'):
+            role = self.request.user.guest_profile.role
+            if role == 'guest':
+                return redirect('my_bookings')
+
         return redirect(self.get_success_url())
 
 
-# ========== Review CRUD ==========
+# ========== Review CRUD (доработанный) ==========
 
 class ReviewListView(BaseListView):
     model = Review
@@ -1235,55 +1282,105 @@ class ReviewDetailView(DetailView):
     context_object_name = 'review'
 
 
-class ReviewCreateView(BaseCreateView):
+class ReviewCreateView(LoginRequiredMixin, CreateView):
+    """Создание отзыва — только для авторизованных гостей, которые завершили бронирование"""
     model = Review
     form_class = ReviewForm
     template_name = 'review_form.html'
-    cancel_url = reverse_lazy('review_list')
-    form_title = 'Создание отзыва'
+    form_title = 'Написать отзыв'
 
-    def get_success_url(self):
-        return reverse_lazy('review_list')
+    def dispatch(self, request, *args, **kwargs):
+        """Проверка, может ли пользователь оставить отзыв"""
+        hotel_id = self.kwargs.get('hotel_id')
+        self.hotel = get_object_or_404(Hotel, id=hotel_id)
+
+        if not request.user.is_authenticated:
+            messages.warning(request, 'Пожалуйста, войдите в систему, чтобы оставить отзыв')
+            return redirect('login')
+
+        try:
+            self.guest = request.user.guest_profile
+        except Guest.DoesNotExist:
+            messages.warning(request, 'Пожалуйста, заполните профиль перед написанием отзыва')
+            return redirect('profile_edit')
+
+        # Проверка: было ли у гостя завершенное бронирование в этом отеле
+        has_completed_booking = Booking.objects.filter(
+            guest=self.guest,
+            room__hotel=self.hotel,
+            status='checked_out'
+        ).exists()
+
+        if not has_completed_booking:
+            messages.error(request,
+                           'Вы можете оставить отзыв только после того, как завершится ваше бронирование в этом отеле.')
+            return redirect('hotel_detail', pk=hotel_id)
+
+        # Проверка: не оставлял ли уже отзыв
+        if Review.objects.filter(guest=self.guest, hotel=self.hotel).exists():
+            messages.warning(request, 'Вы уже оставляли отзыв на этот отель.')
+            return redirect('hotel_detail', pk=hotel_id)
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_title'] = f'Отзыв об отеле "{self.hotel.name}"'
+        context['cancel_url'] = reverse('hotel_detail', kwargs={'pk': self.hotel.id})
+        context['hotel'] = self.hotel
+        return context
 
     def form_valid(self, form):
-        try:
-            form.instance.hotel_id = self.kwargs['hotel_id']
+        form.instance.hotel = self.hotel
+        form.instance.guest = self.guest
+        form.instance.is_verified = False  # Отзывы проходят модерацию
+        messages.success(self.request, 'Спасибо за отзыв! Он будет опубликован после проверки модератором.')
+        return super().form_valid(form)
 
-            # Проверка: может ли гость оставить отзыв (было ли у него бронирование в этом отеле)
-            guest = form.instance.guest if form.instance.guest else None
-            hotel = form.instance.hotel
-            if guest and hotel:
-                has_booking = Booking.objects.filter(
-                    guest=guest,
-                    room__hotel=hotel,
-                    status='checked_out'
-                ).exists()
-                if not has_booking:
-                    messages.warning(self.request, 'Вы можете оставить отзыв только после выезда из отеля')
-
-            messages.success(self.request, 'Отзыв успешно создан')
-            return super().form_valid(form)
-        except Exception as e:
-            logger.error(f"Error in ReviewCreateView: {str(e)}")
-            messages.error(self.request, f'Ошибка при создании отзыва: {str(e)}')
-            return self.form_invalid(form)
+    def get_success_url(self):
+        return reverse('hotel_detail', kwargs={'pk': self.hotel.id})
 
 
-class ReviewUpdateView(BaseUpdateView):
+class ReviewUpdateView(LoginRequiredMixin, UpdateView):
     model = Review
     form_class = ReviewForm
     template_name = 'review_form.html'
-    success_url = reverse_lazy('review_list')
-    cancel_url = reverse_lazy('review_list')
     form_title = 'Редактирование отзыва'
 
+    def dispatch(self, request, *args, **kwargs):
+        review = self.get_object()
+        # Только автор отзыва или админ/менеджер могут редактировать
+        try:
+            guest = request.user.guest_profile
+            if review.guest != guest and guest.role not in ['admin', 'manager']:
+                messages.error(request, 'У вас нет прав для редактирования этого отзыва')
+                return redirect('review_detail', pk=review.pk)
+        except Guest.DoesNotExist:
+            messages.error(request, 'Профиль не найден')
+            return redirect('home')
+        return super().dispatch(request, *args, **kwargs)
 
-class ReviewDeleteView(BaseDeleteView):
+    def get_success_url(self):
+        return reverse('review_detail', kwargs={'pk': self.object.pk})
+
+
+class ReviewDeleteView(LoginRequiredMixin, DeleteView):
     model = Review
     template_name = 'review_confirm_delete.html'
-    success_url = reverse_lazy('review_list')
-    cancel_url = reverse_lazy('review_list')
 
+    def dispatch(self, request, *args, **kwargs):
+        review = self.get_object()
+        try:
+            guest = request.user.guest_profile
+            if review.guest != guest and guest.role not in ['admin', 'manager']:
+                messages.error(request, 'У вас нет прав для удаления этого отзыва')
+                return redirect('review_detail', pk=review.pk)
+        except Guest.DoesNotExist:
+            pass  # Анонимный пользователь не может удалять
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse('hotel_detail', kwargs={'pk': self.object.hotel.id})
 
 # ========== Payment CRUD ==========
 
@@ -1322,7 +1419,9 @@ class PaymentCreateView(BaseCreateView):
     form_title = 'Создание платежа'
 
     def get_success_url(self):
-        return reverse_lazy('payment_list')
+        # После создания платежа возвращаемся на страницу бронирования
+        booking_id = self.kwargs['booking_id']
+        return reverse_lazy('booking_detail', kwargs={'pk': booking_id})
 
     def form_valid(self, form):
         try:
@@ -1331,16 +1430,22 @@ class PaymentCreateView(BaseCreateView):
             # Проверка: не существует ли уже платеж для этого бронирования
             if Payment.objects.filter(booking=booking).exists():
                 messages.error(self.request, 'Для этого бронирования уже существует платеж')
-                return self.form_invalid(form)
+                return redirect('booking_detail', pk=booking.id)
 
             form.instance.booking = booking
             form.instance.amount = booking.total_price
+
+            # Если статус платежа 'paid', обновляем статус бронирования
+            if form.cleaned_data.get('status') == 'paid':
+                booking.status = 'confirmed'
+                booking.save()
+                messages.success(self.request, 'Платеж подтвержден, бронирование подтверждено!')
 
             messages.success(self.request, 'Платеж успешно создан')
             return super().form_valid(form)
         except Booking.DoesNotExist:
             messages.error(self.request, 'Бронирование не найдено')
-            return redirect('payment_list')
+            return redirect('booking_list')
         except Exception as e:
             logger.error(f"Error in PaymentCreateView: {str(e)}")
             messages.error(self.request, f'Ошибка при создании платежа: {str(e)}')
@@ -1595,3 +1700,277 @@ def booking_add_review(request, booking_id):
         return redirect('my_bookings')
 
     return redirect('review_create', hotel_id=booking.room.hotel.id)
+
+
+# ========== Декораторы для проверки ролей ==========
+
+def role_required(allowed_roles):
+    """Декоратор для проверки роли пользователя"""
+
+    def decorator(view_func):
+        def wrapper(request, *args, **kwargs):
+            if not request.user.is_authenticated:
+                return redirect('login')
+            try:
+                guest = request.user.guest_profile
+                if guest.role == 'admin' or guest.role in allowed_roles:
+                    return view_func(request, *args, **kwargs)
+                messages.error(request, 'У вас нет доступа к этой странице')
+                return redirect('dashboard')
+            except Guest.DoesNotExist:
+                messages.error(request, 'Профиль не найден')
+                return redirect('login')
+
+        return wrapper
+
+    return decorator
+
+
+# ========== Функции для работы с корзиной ==========
+
+def get_or_create_cart(guest):
+    """Получить или создать корзину для гостя"""
+    cart, created = Cart.objects.get_or_create(guest=guest)
+    return cart
+
+
+@login_required
+def cart_view(request):
+    """Просмотр корзины"""
+    try:
+        guest = request.user.guest_profile
+        cart, created = Cart.objects.get_or_create(guest=guest)
+        cart_items = cart.items.all().select_related('room', 'room__hotel')
+
+        # Обработка POST запроса (обновление/удаление)
+        if request.method == 'POST':
+            # Удаление позиции
+            if 'remove_item' in request.POST:
+                item_id = request.POST.get('remove_item')
+                try:
+                    item = CartItem.objects.get(id=item_id, cart=cart)
+                    item.delete()
+                    messages.success(request, 'Позиция удалена из корзины')
+                except CartItem.DoesNotExist:
+                    messages.error(request, 'Позиция не найдена')
+                return redirect('cart')
+
+            # Обновление корзины (количество гостей)
+            updated = False
+            for item in cart_items:
+                field_name = f'guests_count_{item.id}'
+                if field_name in request.POST:
+                    try:
+                        new_count = int(request.POST.get(field_name))
+                        if 1 <= new_count <= item.room.capacity:
+                            if item.guests_count != new_count:
+                                item.guests_count = new_count
+                                item.save()
+                                updated = True
+                        else:
+                            messages.warning(request,
+                                             f'Для номера {item.room.room_number} максимальное количество гостей: {item.room.capacity}')
+                    except (ValueError, TypeError):
+                        pass
+
+            if updated:
+                messages.success(request, 'Корзина обновлена')
+            elif 'update_cart' in request.POST:
+                messages.info(request, 'Изменений не обнаружено')
+
+            return redirect('cart')
+
+        total_price = cart.get_total_price()
+        max_points_use = min(guest.loyalty_points, int(total_price)) if total_price else 0
+
+        context = {
+            'cart': cart,
+            'cart_items': cart_items,
+            'total_price': total_price,
+            'loyalty_points': guest.loyalty_points,
+            'max_points_use': max_points_use,
+        }
+        return render(request, 'cart.html', context)
+    except Guest.DoesNotExist:
+        messages.warning(request, 'Пожалуйста, заполните профиль')
+        return redirect('profile_edit')
+    except Exception as e:
+        messages.error(request, f'Ошибка: {str(e)}')
+        return render(request, 'cart.html', {'cart_items': [], 'total_price': 0})
+
+@login_required
+@require_http_methods(['POST'])
+def add_to_cart(request):
+    """Добавление номера в корзину"""
+    try:
+        guest = request.user.guest_profile
+        form = AddToCartForm(request.POST)
+
+        if form.is_valid():
+            room_id = form.cleaned_data['room_id']
+            check_in = form.cleaned_data['check_in_date']
+            check_out = form.cleaned_data['check_out_date']
+            guests_count = form.cleaned_data['guests_count']
+
+            room = get_object_or_404(Room, id=room_id, is_available=True)
+
+            # Проверка дат
+            if check_in >= check_out:
+                messages.error(request, 'Дата заезда должна быть раньше даты выезда')
+                return redirect('hotel_detail', pk=room.hotel.id)
+
+            if check_in < timezone.now().date():
+                messages.error(request, 'Дата заезда не может быть в прошлом')
+                return redirect('hotel_detail', pk=room.hotel.id)
+
+            # Проверка на конфликт с существующими бронированиями
+            conflicting = Booking.objects.filter(
+                room=room,
+                status__in=['pending', 'confirmed', 'checked_in'],
+                check_in_date__lt=check_out,
+                check_out_date__gt=check_in
+            )
+            if conflicting.exists():
+                messages.error(request, 'Номер уже забронирован на выбранные даты')
+                return redirect('hotel_detail', pk=room.hotel.id)
+
+            # Получаем или создаем корзину
+            cart, created = Cart.objects.get_or_create(guest=guest)
+
+            # Добавляем или обновляем позицию
+            cart_item, created = CartItem.objects.get_or_create(
+                cart=cart,
+                room=room,
+                check_in_date=check_in,
+                check_out_date=check_out,
+                defaults={'guests_count': guests_count}
+            )
+
+            if not created:
+                cart_item.guests_count = guests_count
+                cart_item.save()
+                messages.success(request, f'Количество гостей для номера {room.room_number} обновлено')
+            else:
+                messages.success(request, f'Номер {room.room_number} добавлен в корзину')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+    except Guest.DoesNotExist:
+        messages.warning(request, 'Пожалуйста, заполните профиль для бронирования')
+        return redirect('profile_edit')
+    except Exception as e:
+        messages.error(request, f'Ошибка: {str(e)}')
+
+    return redirect('cart')
+
+
+@login_required
+def remove_from_cart(request, item_id):
+    """Удаление позиции из корзины"""
+    try:
+        guest = request.user.guest_profile
+        cart = get_or_create_cart(guest)
+        cart_item = get_object_or_404(CartItem, id=item_id, cart=cart)
+        cart_item.delete()
+        messages.success(request, 'Позиция удалена из корзины')
+    except Guest.DoesNotExist:
+        messages.warning(request, 'Профиль не найден')
+
+    return redirect('cart')
+
+
+@login_required
+def cart_checkout_view(request):
+    """Оформление заказа из корзины"""
+    try:
+        guest = request.user.guest_profile
+        cart = get_or_create_cart(guest)
+        cart_items = cart.items.all().select_related('room', 'room__hotel')
+
+        if not cart_items:
+            messages.warning(request, 'Ваша корзина пуста')
+            return redirect('cart')
+
+        if request.method == 'POST':
+            form = OrderCheckoutForm(request.POST)
+            if form.is_valid():
+                special_requests = form.cleaned_data['special_requests']
+                use_points = form.cleaned_data['use_loyalty_points']
+
+                total_price = cart.get_total_price()
+                points_discount = 0
+
+                # Применяем бонусные баллы
+                if use_points and guest.loyalty_points > 0:
+                    points_discount = min(guest.loyalty_points, int(total_price))
+                    total_price -= points_discount
+
+                # Создаем бронирования из каждой позиции корзины
+                bookings_created = []
+                for item in cart_items:
+                    # Проверяем, не забронирован ли уже номер
+                    conflicting = Booking.objects.filter(
+                        room=item.room,
+                        status__in=['pending', 'confirmed', 'checked_in'],
+                        check_in_date__lt=item.check_out_date,
+                        check_out_date__gt=item.check_in_date
+                    )
+                    if conflicting.exists():
+                        messages.error(request, f'Номер {item.room.room_number} уже забронирован на выбранные даты')
+                        return redirect('cart')
+
+                    # Рассчитываем стоимость для этой позиции
+                    nights = (item.check_out_date - item.check_in_date).days
+                    item_total = item.room.price_per_night * nights
+
+                    # Пропорционально распределяем скидку по баллам
+                    if points_discount > 0:
+                        discount_share = int(
+                            item_total / cart.get_total_price() * points_discount) if cart.get_total_price() > 0 else 0
+                        item_total -= discount_share
+
+                    booking = Booking.objects.create(
+                        guest=guest,
+                        room=item.room,
+                        check_in_date=item.check_in_date,
+                        check_out_date=item.check_out_date,
+                        total_price=item_total,
+                        status='pending',
+                        special_requests=special_requests
+                    )
+                    bookings_created.append(booking)
+
+                # Используем бонусные баллы
+                if use_points and points_discount > 0:
+                    guest.use_points(points_discount)
+
+                # Очищаем корзину
+                cart.clear()
+
+                messages.success(request, f'Успешно оформлено {len(bookings_created)} бронирований!')
+                if len(bookings_created) == 1:
+                    return redirect('booking_detail', pk=bookings_created[0].id)
+                return redirect('my_bookings')
+            else:
+                for error in form.errors.values():
+                    messages.error(request, error)
+        else:
+            form = OrderCheckoutForm()
+
+        total_price = cart.get_total_price()
+        max_points_use = min(guest.loyalty_points, int(total_price))
+
+        context = {
+            'cart': cart,
+            'cart_items': cart_items,
+            'total_price': total_price,
+            'loyalty_points': guest.loyalty_points,
+            'max_points_use': max_points_use,
+            'form': form,
+        }
+        return render(request, 'cart_checkout.html', context)
+    except Guest.DoesNotExist:
+        messages.warning(request, 'Пожалуйста, заполните профиль')
+        return redirect('profile_edit')
+

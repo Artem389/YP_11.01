@@ -411,8 +411,8 @@
                     <a href="{% url 'booking_detail' booking.id %}" class="btn-action btn-view">Подробнее</a>
 
                     {% if booking.status in 'pending,confirmed' and booking.check_in_date > now.date %}
-                        <a href="{% url 'booking_cancel' booking.id %}" class="btn-action btn-cancel"
-                           onclick="return confirm('Вы уверены, что хотите отменить бронирование?')">Отменить</a>
+                        <a href="{% url 'booking_delete' booking.id %}" class="btn-action btn-cancel"
+   onclick="return confirm('Вы уверены, что хотите отменить бронирование?')">Отменить</a>
                     {% endif %}
 
                     {% if booking.status == 'checked_out' %}

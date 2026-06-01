@@ -1413,3 +1413,974 @@ Watching for file changes with StatReloader
 "GET /hotels/search/ HTTP/1.1" 200 15113
 "GET /dashboard/ HTTP/1.1" 200 5173
 "GET /hotels/ HTTP/1.1" 200 8493
+Watching for file changes with StatReloader
+"GET /hotels/ HTTP/1.1" 200 7710
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 19067
+"GET /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 3732
+"GET /login/ HTTP/1.1" 200 4202
+"POST /login/ HTTP/1.1" 200 4817
+"POST /login/ HTTP/1.1" 200 4805
+"POST /login/ HTTP/1.1" 200 4805
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 7749
+Internal Server Error: /cart/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\My_file\Python\Lib\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 1688, in cart_view
+    return render(request, 'cart.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "E:\My_file\Python\Lib\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "E:\My_file\Python\Lib\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "E:\My_file\Python\Lib\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "E:\My_file\Python\Lib\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "E:\My_file\Python\Lib\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "E:\My_file\Python\Lib\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "E:\My_file\Python\Lib\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "E:\My_file\Python\Lib\django\template\base.py", line 489, in parse
+    raise self.error(token, e)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'get_item'
+"GET /cart/ HTTP/1.1" 500 283427
+"GET /hotels/search/ HTTP/1.1" 200 15574
+"GET / HTTP/1.1" 200 5688
+"GET /hotels/search/ HTTP/1.1" 200 15574
+Internal Server Error: /cart/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\My_file\Python\Lib\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 1688, in cart_view
+    return render(request, 'cart.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "E:\My_file\Python\Lib\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "E:\My_file\Python\Lib\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "E:\My_file\Python\Lib\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "E:\My_file\Python\Lib\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "E:\My_file\Python\Lib\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "E:\My_file\Python\Lib\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "E:\My_file\Python\Lib\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "E:\My_file\Python\Lib\django\template\base.py", line 489, in parse
+    raise self.error(token, e)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'get_item'
+"GET /cart/ HTTP/1.1" 500 283431
+Watching for file changes with StatReloader
+"GET /hotels/search/ HTTP/1.1" 200 13332
+"GET /cart/ HTTP/1.1" 200 8545
+"GET / HTTP/1.1" 200 5688
+"GET /hotels/search/ HTTP/1.1" 200 15600
+"GET /hotels/ HTTP/1.1" 200 8954
+"GET /hotels/6/ HTTP/1.1" 200 6015
+"GET /hotels/search/ HTTP/1.1" 200 15600
+"GET / HTTP/1.1" 200 5688
+"GET /hotels/search/ HTTP/1.1" 200 15600
+Watching for file changes with StatReloader
+"GET /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 3732
+"GET /login/ HTTP/1.1" 200 4202
+"POST /login/ HTTP/1.1" 200 4805
+"POST /login/ HTTP/1.1" 200 4805
+"POST /login/ HTTP/1.1" 200 4805
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 7749
+"GET /hotels/search/ HTTP/1.1" 200 15600
+Watching for file changes with StatReloader
+Internal Server Error: /hotels/search/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 371, in hotel_search_view
+    return render(request, 'hotel_search.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "E:\My_file\Python\Lib\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "E:\My_file\Python\Lib\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'hotel_detail' with arguments '('',)' not found. 1 pattern(s) tried: ['hotels/(?P<pk>[0-9]+)/\\Z']
+"GET /hotels/search/ HTTP/1.1" 500 185103
+Internal Server Error: /hotels/search/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 371, in hotel_search_view
+    return render(request, 'hotel_search.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "E:\My_file\Python\Lib\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "E:\My_file\Python\Lib\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'hotel_detail' with arguments '('',)' not found. 1 pattern(s) tried: ['hotels/(?P<pk>[0-9]+)/\\Z']
+"GET /hotels/search/ HTTP/1.1" 500 186546
+Watching for file changes with StatReloader
+Internal Server Error: /hotels/search/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 374, in hotel_search_view
+    return render(request, 'hotel_search.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 198, in render
+    values = list(values)
+TypeError: 'int' object is not iterable
+"GET /hotels/search/ HTTP/1.1" 500 169120
+Internal Server Error: /hotels/search/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 374, in hotel_search_view
+    return render(request, 'hotel_search.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 198, in render
+    values = list(values)
+TypeError: 'int' object is not iterable
+"GET /hotels/search/ HTTP/1.1" 500 170563
+"GET /dashboard/ HTTP/1.1" 200 7433
+Internal Server Error: /hotels/search/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 374, in hotel_search_view
+    return render(request, 'hotel_search.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 198, in render
+    values = list(values)
+TypeError: 'int' object is not iterable
+"GET /hotels/search/ HTTP/1.1" 500 170426
+Watching for file changes with StatReloader
+Internal Server Error: /hotels/search/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 374, in hotel_search_view
+    return render(request, 'hotel_search.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 198, in render
+    values = list(values)
+TypeError: 'int' object is not iterable
+"GET /hotels/search/ HTTP/1.1" 500 169412
+Internal Server Error: /hotels/search/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 374, in hotel_search_view
+    return render(request, 'hotel_search.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 198, in render
+    values = list(values)
+TypeError: 'int' object is not iterable
+"GET /hotels/search/ HTTP/1.1" 500 170855
+Watching for file changes with StatReloader
+Internal Server Error: /hotels/search/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 374, in hotel_search_view
+    return render(request, 'hotel_search.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 550, in render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 198, in render
+    values = list(values)
+TypeError: 'int' object is not iterable
+"GET /hotels/search/ HTTP/1.1" 500 181015
+Watching for file changes with StatReloader
+"GET /hotels/search/ HTTP/1.1" 200 23466
+"GET /hotels/search/ HTTP/1.1" 200 25734
+"GET /hotels/2/ HTTP/1.1" 200 6047
+"GET /profile/edit/ HTTP/1.1" 200 13005
+"GET /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 3732
+"GET /hotels/search/ HTTP/1.1" 200 23466
+"GET /login/ HTTP/1.1" 200 4202
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 6485
+"GET / HTTP/1.1" 200 4444
+"GET /hotels/search/ HTTP/1.1" 200 24490
+"GET / HTTP/1.1" 200 4444
+"GET /dashboard/ HTTP/1.1" 200 6171
+"GET /hotels/search/ HTTP/1.1" 200 24490
+"GET /hotels/1/ HTTP/1.1" 200 4806
+"GET /hotels/1/update/ HTTP/1.1" 200 6634
+"GET / HTTP/1.1" 200 4444
+"GET / HTTP/1.1" 200 4444
+"GET /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 3732
+"GET /login/ HTTP/1.1" 200 4202
+"POST /login/ HTTP/1.1" 200 4805
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 6477
+"GET /hotels/search/ HTTP/1.1" 200 24490
+"GET /hotels/1/ HTTP/1.1" 200 4806
+"GET /hotels/1/update/ HTTP/1.1" 200 6634
+"GET /hotels/1/ HTTP/1.1" 200 4806
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 4444
+"GET /hotels/search/ HTTP/1.1" 200 24490
+"GET /hotels/1/ HTTP/1.1" 200 20833
+"GET /hotels/6/ HTTP/1.1" 200 17877
+"POST /cart/add/ HTTP/1.1" 302 0
+Internal Server Error: /cart/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\base.py", line 890, in _resolve_lookup
+    raise TypeError
+TypeError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\base.py", line 901, in _resolve_lookup
+    current = getattr(current, bit)
+AttributeError: 'int' object has no attribute 'prefix'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\template\base.py", line 907, in _resolve_lookup
+    current = current[int(bit)]
+                      ~~~^^^^^
+ValueError: invalid literal for int() with base 10: 'prefix'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\My_file\Python\Lib\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 1696, in cart_view
+    return render(request, 'cart.html', context)
+  File "E:\My_file\Python\Lib\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "E:\My_file\Python\Lib\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 1075, in render
+    output = self.filter_expression.resolve(context)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 743, in resolve
+    arg_vals.append(arg.resolve(context))
+                    ~~~~~~~~~~~^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\template\base.py", line 854, in resolve
+    value = self._resolve_lookup(context)
+  File "E:\My_file\Python\Lib\django\template\base.py", line 914, in _resolve_lookup
+    raise VariableDoesNotExist(
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )  # missing attribute
+    ^
+django.template.base.VariableDoesNotExist: Failed lookup for key [prefix] in 1
+"GET /cart/ HTTP/1.1" 500 223371
+Watching for file changes with StatReloader
+"GET /cart/ HTTP/1.1" 200 10704
+"POST /cart/ HTTP/1.1" 302 0
+"GET /cart/ HTTP/1.1" 200 11016
+"POST /cart/ HTTP/1.1" 302 0
+"GET /cart/ HTTP/1.1" 200 11016
+"POST /cart/ HTTP/1.1" 302 0
+"GET /cart/ HTTP/1.1" 200 11016
+"POST /cart/ HTTP/1.1" 302 0
+"GET /cart/ HTTP/1.1" 200 11016
+"POST /cart/ HTTP/1.1" 302 0
+"GET /cart/ HTTP/1.1" 200 11016
+"GET /cart/ HTTP/1.1" 200 10704
+Watching for file changes with StatReloader
+"GET /cart/ HTTP/1.1" 302 0
+Not Found: /accounts/login/
+"GET /accounts/login/?next=/cart/ HTTP/1.1" 404 19091
+"GET /cart/ HTTP/1.1" 200 10762
+"POST /cart/ HTTP/1.1" 302 0
+"GET /cart/ HTTP/1.1" 200 11074
+"GET /cart/checkout/ HTTP/1.1" 200 7681
+"POST /cart/checkout/ HTTP/1.1" 302 0
+"GET /bookings/12/ HTTP/1.1" 200 6819
+"GET /payments/create/12/ HTTP/1.1" 200 7687
+"POST /payments/create/12/ HTTP/1.1" 302 0
+"GET /payments/ HTTP/1.1" 200 14803
+"GET /my-bookings/ HTTP/1.1" 200 14228
+"GET /my-bookings/?status=past&sort=-created_at HTTP/1.1" 200 12952
+"GET /my-bookings/?status=current&sort=-created_at HTTP/1.1" 200 12955
+"GET /my-bookings/?status=upcoming&sort=-created_at HTTP/1.1" 200 14233
+"GET /my-bookings/?status=all&sort=-created_at HTTP/1.1" 200 14228
+"GET /bookings/12/ HTTP/1.1" 200 6765
+"GET /bookings/12/delete/ HTTP/1.1" 200 5835
+"POST /bookings/12/delete/ HTTP/1.1" 302 0
+"GET /bookings/ HTTP/1.1" 200 18054
+"GET /dashboard/ HTTP/1.1" 200 6163
+"GET /hotels/search/ HTTP/1.1" 200 24490
+"GET /hotels/1/ HTTP/1.1" 200 20833
+"POST /cart/add/ HTTP/1.1" 302 0
+"GET /cart/ HTTP/1.1" 200 11085
+"GET /cart/checkout/ HTTP/1.1" 200 7670
+"POST /cart/checkout/ HTTP/1.1" 302 0
+"GET /bookings/13/ HTTP/1.1" 200 6718
+Watching for file changes with StatReloader
+"GET /my-bookings/ HTTP/1.1" 302 0
+Not Found: /accounts/login/
+"GET /accounts/login/?next=/my-bookings/ HTTP/1.1" 404 19098
+Internal Server Error: /bookings/13/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\My_file\Python\Lib\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 1145, in get
+    context = self.get_context_data(object=self.object)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 1117, in get_context_data
+    services_total = booking.services.aggregate(total=models.Sum('price'))['total'] or 0
+                                                      ^^^^^^
+NameError: name 'models' is not defined
+"GET /bookings/13/ HTTP/1.1" 500 93949
+"GET /cart/checkout/ HTTP/1.1" 302 0
+"GET /cart/ HTTP/1.1" 200 8078
+"GET /my-bookings/ HTTP/1.1" 200 15931
+Internal Server Error: /bookings/13/
+Traceback (most recent call last):
+  File "E:\My_file\Python\Lib\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "E:\My_file\Python\Lib\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\My_file\Python\Lib\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_file\Python\Lib\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 1145, in get
+    context = self.get_context_data(object=self.object)
+  File "E:\учеба\3 курс\Практика\Учебная2\DjangoProject\hotel_booking\views.py", line 1117, in get_context_data
+    services_total = booking.services.aggregate(total=models.Sum('price'))['total'] or 0
+                                                      ^^^^^^
+NameError: name 'models' is not defined
+"GET /bookings/13/ HTTP/1.1" 500 93810
+Watching for file changes with StatReloader
+"GET /bookings/13/ HTTP/1.1" 200 7457
+"GET /bookings/13/delete/ HTTP/1.1" 200 5838
+"POST /bookings/13/delete/ HTTP/1.1" 302 0
+"GET /my-bookings/ HTTP/1.1" 200 14352
+"GET /my-bookings/ HTTP/1.1" 200 14352
+"GET /my-bookings/?status=upcoming&sort=-created_at HTTP/1.1" 200 12956
+"GET /my-bookings/?status=current&sort=-created_at HTTP/1.1" 200 12955
+"GET /my-bookings/?status=cancelled&sort=-created_at HTTP/1.1" 200 14358
+"GET /my-bookings/?status=past&sort=-created_at HTTP/1.1" 200 12952
+"GET /my-bookings/?status=all&sort=-created_at HTTP/1.1" 200 14352
+"GET / HTTP/1.1" 200 4444
+"GET /hotels/search/ HTTP/1.1" 200 24490
+"GET /hotels/1/ HTTP/1.1" 200 20833
+"POST /cart/add/ HTTP/1.1" 302 0
+"GET /cart/ HTTP/1.1" 200 11088
+"POST /cart/add/ HTTP/1.1" 302 0
+"GET /cart/ HTTP/1.1" 200 11115
+"GET /cart/checkout/ HTTP/1.1" 200 7673
+"POST /cart/checkout/ HTTP/1.1" 302 0
+"GET /bookings/14/ HTTP/1.1" 200 7799
+"GET /my-bookings/ HTTP/1.1" 200 15930
+"GET /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 3732
+"GET /login/ HTTP/1.1" 200 4202
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 6485
+"GET /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 3732
+"GET /hotels/search/ HTTP/1.1" 200 23466
+"GET /login/ HTTP/1.1" 200 4202
+"POST /login/ HTTP/1.1" 200 4805
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 7737
+"GET /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 3732
+"GET /login/ HTTP/1.1" 200 4202
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 7749
+"GET /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 3732
+"GET /login/ HTTP/1.1" 200 4202
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 6477
+"GET /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 3732
+"GET /login/ HTTP/1.1" 200 4202
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 7749
+"GET /reviews/ HTTP/1.1" 200 8631
+"GET /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 3732
+"GET /hotels/search/ HTTP/1.1" 200 23005
+"GET /hotels/1/ HTTP/1.1" 200 13663
+"GET /login/ HTTP/1.1" 200 4202
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 6477
+"GET /hotels/search/ HTTP/1.1" 200 24029
+"GET /hotels/1/ HTTP/1.1" 200 20833
+"POST /cart/add/ HTTP/1.1" 302 0
+"GET /cart/ HTTP/1.1" 200 11088
+"GET /cart/checkout/ HTTP/1.1" 200 7673
+"POST /cart/checkout/ HTTP/1.1" 302 0
+"GET /bookings/15/ HTTP/1.1" 200 7799
+"GET /my-bookings/ HTTP/1.1" 200 14222
+Watching for file changes with StatReloader
+"GET /my-bookings/ HTTP/1.1" 200 14222
+"GET /bookings/15/ HTTP/1.1" 200 7459
+"GET /hotels/search/ HTTP/1.1" 200 24029
+"GET /hotels/1/ HTTP/1.1" 200 21516

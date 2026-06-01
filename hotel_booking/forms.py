@@ -308,3 +308,68 @@ class CustomPasswordChangeForm(PasswordChangeForm):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs.update({'class': 'form-control'})
+
+
+# ========== Формы для корзины ==========
+
+class AddToCartForm(forms.Form):
+    """Форма добавления номера в корзину"""
+    room_id = forms.IntegerField(widget=forms.HiddenInput())
+    check_in_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+        label="Дата заезда"
+    )
+    check_out_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+        label="Дата выезда"
+    )
+    guests_count = forms.IntegerField(
+        min_value=1, max_value=10, initial=2,
+        widget=forms.NumberInput(attrs={'class': 'form-control'}),
+        label="Количество гостей"
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        check_in = cleaned_data.get('check_in_date')
+        check_out = cleaned_data.get('check_out_date')
+
+        if check_in and check_out:
+            if check_in >= check_out:
+                raise ValidationError("Дата заезда должна быть раньше даты выезда")
+            if check_in < timezone.now().date():
+                raise ValidationError("Дата заезда не может быть в прошлом")
+
+        return cleaned_data
+
+
+class CartItemUpdateForm(forms.Form):
+    """Форма обновления позиции в корзине"""
+    guests_count = forms.IntegerField(min_value=1, max_value=10, required=False)
+    check_in_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    check_out_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    remove = forms.BooleanField(required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        check_in = cleaned_data.get('check_in_date')
+        check_out = cleaned_data.get('check_out_date')
+
+        if check_in and check_out and check_in >= check_out:
+            raise ValidationError("Дата заезда должна быть раньше даты выезда")
+
+        return cleaned_data
+
+
+class OrderCheckoutForm(forms.Form):
+    """Форма оформления заказа из корзины"""
+    special_requests = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
+        required=False,
+        label="Особые пожелания"
+    )
+    use_loyalty_points = forms.BooleanField(
+        required=False,
+        label="Использовать бонусные баллы",
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )

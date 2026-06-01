@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Корзина{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+    }
+
+    .cart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .cart-table {
+        width: 100%;
+    }
+
+    .cart-table th,
+    .cart-table td {
+        padding: 1rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #eee;
+    }
+
+    .cart-table th {
+        background: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .room-info h4 {
+        margin-bottom: 0.25rem;
+    }
+
+    .room-info p {
+        margin-bottom: 0.25rem;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .cart-summary {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        position: sticky;
+        top: 100px;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .summary-total {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #667eea;
+        border-top: 2px solid #ddd;
+        padding-top: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .btn-checkout {
+        width: 100%;
+        padding: 0.75rem;
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: bold;
+        margin-top: 1rem;
+        text-align: center;
+        display: inline-block;
+        text-decoration: none;
+    }
+
+    .btn-checkout:hover {
+        color: white;
+        opacity: 0.9;
+    }
+
+    .btn-update {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+
+    .btn-update:hover {
+        background: #5a6268;
+    }
+
+    .btn-remove {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 0.85rem;
+    }
+
+    .btn-remove:hover {
+        background: #c82333;
+        color: white;
+    }
+
+    .empty-cart {
+        text-align: center;
+        padding: 4rem;
+    }
+
+    .empty-icon {
+        font-size: 5rem;
+        margin-bottom: 1rem;
+    }
+
+    .quantity-input {
+        width: 80px;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .badge {
+        background: #667eea;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .cart-table {
+            font-size: 0.85rem;
+        }
+
+        .cart-table th,
+        .cart-table td {
+            padding: 0.5rem;
+        }
+
+        .quantity-input {
+            width: 60px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="cart-container">
+            <div class="cart-header">
+                <h2>Корзина</h2>
+                <span class="badge">{{ cart.get_items_count }} позиций</span>
+            </div>
+
+            {% if cart_items %}
+                <form method="post">
+                    {% csrf_token %}
+                    <table class="cart-table">
+                        <thead>
+                            <tr>
+                                <th>Номер</th>
+                                <th>Даты</th>
+                                <th>Гостей</th>
+                                <th>Цена за ночь</th>
+                                <th>Всего</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td class="room-info">
+                                    <h4>{{ item.room.hotel.name }}</h4>
+                                    <p>Номер {{ item.room.room_number }}</p>
+                                    <p>{{ item.room.get_room_type_display }}</p>
+                                    <small class="text-muted">Макс. гостей: {{ item.room.capacity }}</small>
+                                </td>
+                                <td>
+                                    <div class="mb-1">{{ item.check_in_date|date:"d.m.Y" }}</div>
+                                    <div>↓</div>
+                                    <div>{{ item.check_out_date|date:"d.m.Y" }}</div>
+                                    <small class="text-muted">{{ item.get_nights }} ночей</small>
+                                </td>
+                                <td>
+                                    <input type="number" name="guests_count_{{ item.id }}"
+                                           value="{{ item.guests_count }}" min="1" max="{{ item.room.capacity }}"
+                                           class="quantity-input">
+                                </td>
+                                <td>{{ item.room.price_per_night }} руб.</td>
+                                <td class="fw-bold">{{ item.get_room_total }} руб.</td>
+                                <td>
+                                    <button type="submit" name="remove_item" value="{{ item.id }}"
+                                            class="btn-remove" onclick="return confirm('Удалить эту позицию?')">Удалить</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <div class="mt-3 text-end">
+                        <button type="submit" name="update_cart" value="1" class="btn-update">🔄 Обновить корзину</button>
+                    </div>
+                </form>
+            {% else %}
+                <div class="empty-cart">
+                    <div class="empty-icon">🛒</div>
+                    <h3>Корзина пуста</h3>
+                    <p>Добавьте номера из списка отелей</p>
+                    <a href="{% url 'hotel_search' %}" class="btn btn-primary">Найти отели</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if cart_items %}
+    <div class="col-lg-4">
+        <div class="cart-summary">
+            <h4 class="mb-3">Итого</h4>
+            <div class="summary-row">
+                <span>Стоимость номеров:</span>
+                <span>{{ total_price }} руб.</span>
+            </div>
+            {% if loyalty_points > 0 %}
+            <div class="summary-row">
+                <span>Бонусные баллы:</span>
+                <span>{{ loyalty_points }}</span>
+            </div>
+            <div class="summary-row text-muted">
+                <span>Макс. скидка баллами:</span>
+                <span>{{ max_points_use }} руб.</span>
+            </div>
+            {% endif %}
+            <div class="summary-total">
+                <span>К оплате:</span>
+                <span>{{ total_price }} руб.</span>
+            </div>
+            <a href="{% url 'cart_checkout' %}" class="btn-checkout">Оформить бронирование →</a>
+            <div class="text-center mt-3">
+                <small class="text-muted">Бесплатная отмена за 24 часа до заезда</small>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

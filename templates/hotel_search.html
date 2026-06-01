@@ -1,5 +1,6 @@
-<!-- Новый файл: hotel_booking/hotel_search.html - Страница поиска и фильтрации отелей -->
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}Поиск отелей{% endblock %}
 
 {% block extra_css %}
@@ -10,7 +11,6 @@
         gap: 2rem;
     }
 
-    /* Filters Sidebar */
     .filters-sidebar {
         background: white;
         border-radius: 15px;
@@ -60,26 +60,6 @@
         border-radius: 5px;
     }
 
-    .rating-filter {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .rating-btn {
-        padding: 0.5rem;
-        background: #f5f5f5;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .rating-btn:hover, .rating-btn.active {
-        background: #667eea;
-        color: white;
-    }
-
     .btn-apply {
         width: 100%;
         padding: 0.75rem;
@@ -92,7 +72,26 @@
         margin-top: 1rem;
     }
 
-    /* Results Section */
+    .btn-reset {
+        width: 100%;
+        padding: 0.75rem;
+        background: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-top: 0.5rem;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-reset:hover {
+        background: #5a6268;
+        color: white;
+    }
+
     .results-header {
         display: flex;
         justify-content: space-between;
@@ -156,9 +155,14 @@
         color: #333;
     }
 
+    .hotel-result-info h3 a:hover {
+        color: #667eea;
+    }
+
     .hotel-result-stars {
         color: #ffc107;
         margin-bottom: 0.5rem;
+        font-size: 1.1rem;
     }
 
     .hotel-result-location {
@@ -172,12 +176,19 @@
         margin: 0.5rem 0;
         color: #888;
         font-size: 0.9rem;
+        flex-wrap: wrap;
+    }
+
+    .hotel-result-description {
+        color: #666;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
     }
 
     .hotel-result-right {
         padding: 1rem;
         text-align: right;
-        min-width: 180px;
+        min-width: 200px;
         background: #f8f9fa;
         display: flex;
         flex-direction: column;
@@ -203,6 +214,53 @@
         color: white;
         text-decoration: none;
         border-radius: 25px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-book:hover {
+        opacity: 0.9;
+        color: white;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+
+    .page-link {
+        padding: 0.5rem 1rem;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #667eea;
+        transition: all 0.3s;
+    }
+
+    .page-link:hover {
+        background: #667eea;
+        color: white;
+    }
+
+    .page-link.active {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem;
+        background: white;
+        border-radius: 15px;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
     }
 
     @media (max-width: 992px) {
@@ -225,6 +283,9 @@
 
         .hotel-result-right {
             text-align: left;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
         }
     }
 </style>
@@ -232,128 +293,129 @@
 
 {% block content %}
 <div class="search-layout">
-    <!-- Filters -->
+    <!-- Filters Sidebar -->
     <aside class="filters-sidebar">
-        <form>
+        <form method="get" action="{% url 'hotel_search' %}">
+            <div class="filter-section">
+                <h4>Поиск</h4>
+                <input type="text" name="destination" class="form-control"
+                       placeholder="Название или адрес" value="{{ request.GET.destination }}">
+            </div>
+
             <div class="filter-section">
                 <h4>Цена за ночь</h4>
                 <div class="price-range">
-                    <input type="number" placeholder="от">
-                    <input type="number" placeholder="до">
+                    <input type="number" name="min_price" placeholder="от" value="{{ request.GET.min_price }}">
+                    <input type="number" name="max_price" placeholder="до" value="{{ request.GET.max_price }}">
                 </div>
             </div>
 
             <div class="filter-section">
                 <h4>Количество звезд</h4>
-                <div class="rating-filter">
-                    <label class="filter-option">
-                        <input type="checkbox"> 5 звезд
-                    </label>
-                    <label class="filter-option">
-                        <input type="checkbox"> 4 звезды и выше
-                    </label>
-                    <label class="filter-option">
-                        <input type="checkbox"> 3 звезды и выше
-                    </label>
-                    <label class="filter-option">
-                        <input type="checkbox"> Любой рейтинг
-                    </label>
-                </div>
+                {% for i in "12345"|make_list %}
+                <label class="filter-option">
+                    <input type="checkbox" name="stars" value="{{ i }}"
+                           {% if i in request.GET.stars %}checked{% endif %}>
+                    {{ i }} звезд{% if i == "5" %} и выше{% endif %}
+                </label>
+                {% endfor %}
             </div>
 
             <div class="filter-section">
                 <h4>Удобства</h4>
                 <label class="filter-option">
-                    <input type="checkbox"> Бесплатный Wi-Fi
+                    <input type="checkbox" name="amenities" value="wifi"
+                           {% if 'wifi' in request.GET.amenities %}checked{% endif %}>
+                    Бесплатный Wi-Fi
                 </label>
                 <label class="filter-option">
-                    <input type="checkbox"> Парковка
-                </label>
-                <label class="filter-option">
-                    <input type="checkbox"> Бассейн
-                </label>
-                <label class="filter-option">
-                    <input type="checkbox"> Фитнес-центр
-                </label>
-                <label class="filter-option">
-                    <input type="checkbox"> Ресторан
-                </label>
-                <label class="filter-option">
-                    <input type="checkbox"> Кондиционер
-                </label>
-            </div>
-
-            <div class="filter-section">
-                <h4>Тип размещения</h4>
-                <label class="filter-option">
-                    <input type="checkbox"> Отель
-                </label>
-                <label class="filter-option">
-                    <input type="checkbox"> Апартаменты
-                </label>
-                <label class="filter-option">
-                    <input type="checkbox"> Хостел
-                </label>
-                <label class="filter-option">
-                    <input type="checkbox"> Гостевой дом
+                    <input type="checkbox" name="amenities" value="fitness"
+                           {% if 'fitness' in request.GET.amenities %}checked{% endif %}>
+                    Фитнес-центр
                 </label>
             </div>
 
             <button type="submit" class="btn-apply">Применить фильтры</button>
+            <a href="{% url 'hotel_search' %}" class="btn-reset">Сбросить</a>
         </form>
     </aside>
 
     <!-- Results -->
     <div class="results-section">
         <div class="results-header">
-            <div class="results-count">Найдено 156 отелей</div>
-            <select class="sort-select">
-                <option>По популярности</option>
-                <option>Сначала дорогие</option>
-                <option>Сначала дешевые</option>
-                <option>По рейтингу</option>
+            <div class="results-count">Найдено {{ total_count }} отелей</div>
+            <select class="sort-select" onchange="window.location.href='?' + new URLSearchParams({...Object.fromEntries(new URLSearchParams(window.location.search)), sort: this.value}).toString()">
+                <option value="popularity" {% if current_sort == 'popularity' %}selected{% endif %}>По популярности</option>
+                <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Сначала дешевые</option>
+                <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Сначала дорогие</option>
+                <option value="rating" {% if current_sort == 'rating' %}selected{% endif %}>По рейтингу</option>
             </select>
         </div>
 
         <div class="hotels-list">
+            {% for hotel in page_obj %}
             <div class="hotel-result-card">
-                <div class="hotel-result-image">🏨</div>
+                <div class="hotel-result-image">
+                    🏨
+                </div>
                 <div class="hotel-result-info">
-                    <h3><a href="#">Grand Plaza Hotel Moscow</a></h3>
-                    <div class="hotel-result-stars">★★★★★</div>
-                    <div class="hotel-result-location">📍 Москва, Тверской район</div>
-                    <div class="hotel-result-features">
-                        <span>Бесплатный Wi-Fi</span>
-                        <span>Парковка</span>
-                        <span>Фитнес-центр</span>
-                    </div>
-                    <div>Отличный отель в центре Москвы. Рядом метро, много кафе и магазинов.</div>
-                </div>
-                <div class="hotel-result-right">
-                    <div class="hotel-result-price">8 500 руб <span>/ночь</span></div>
-                    <a href="#" class="btn-book">Выбрать</a>
-                </div>
-            </div>
+                    <h3>
+                        <a href="{% url 'hotel_detail' hotel.id %}">{{ hotel.name }}</a>
+                    </h3>
+                    <div class="hotel-result-stars">
+    Рейтинг: {{ hotel.stars }} ★
+</div>
+                    <div class="hotel-result-location">📍 {{ hotel.address|truncatechars:80 }}</div>
 
-            <div class="hotel-result-card">
-                <div class="hotel-result-image">🏨</div>
-                <div class="hotel-result-info">
-                    <h3><a href="#">Seaside Resort & Spa Sochi</a></h3>
-                    <div class="hotel-result-stars">★★★★★</div>
-                    <div class="hotel-result-location">📍 Сочи, Адлер</div>
                     <div class="hotel-result-features">
-                        <span>Бассейн</span>
-                        <span>Spa-центр</span>
-                        <span>Ресторан</span>
+                        {% if hotel.min_price %}
+                            <span>💰 от {{ hotel.min_price|floatformat:0 }} руб/ночь</span>
+                        {% endif %}
+                        {% if hotel.avg_rating %}
+                            <span>⭐ Рейтинг: {{ hotel.avg_rating|floatformat:1 }}/5</span>
+                        {% endif %}
+                        <span>📝 {{ hotel.reviews_count }} отзывов</span>
                     </div>
-                    <div>Прекрасный отель на первой береговой линии. Собственный пляж.</div>
+
+                    <div class="hotel-result-description">
+                        {{ hotel.description|truncatechars:120 }}
+                    </div>
                 </div>
                 <div class="hotel-result-right">
-                    <div class="hotel-result-price">12 000 руб <span>/ночь</span></div>
-                    <a href="#" class="btn-book">Выбрать</a>
+                    {% if hotel.min_price %}
+                        <div class="hotel-result-price">{{ hotel.min_price|floatformat:0 }} руб <span>/ночь</span></div>
+                    {% else %}
+                        <div class="hotel-result-price">Цена не указана</div>
+                    {% endif %}
+                    <a href="{% url 'hotel_detail' hotel.id %}" class="btn-book">Выбрать номер</a>
                 </div>
             </div>
+            {% empty %}
+            <div class="empty-state">
+                <div class="empty-icon">🏨</div>
+                <h3>Отели не найдены</h3>
+                <p>Попробуйте изменить параметры поиска</p>
+                <a href="{% url 'hotel_search' %}" class="btn-book">Сбросить фильтры</a>
+            </div>
+            {% endfor %}
         </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page=1&{{ request.GET.urlencode }}" class="page-link">Первая</a>
+                <a href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}" class="page-link">←</a>
+            {% endif %}
+
+            <span class="page-link active">{{ page_obj.number }}</span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}" class="page-link">→</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}&{{ request.GET.urlencode }}" class="page-link">Последняя</a>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

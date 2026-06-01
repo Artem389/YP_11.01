@@ -21,7 +21,35 @@
 <p>{{ room.description }}</p>
 {% endif %}
 
-<h3>Бронирования этого номера</h3>
+<!-- Форма добавления в корзину -->
+{% if user.is_authenticated and room.is_available %}
+<div class="cart-form mt-4 p-3 bg-light rounded">
+    <h4>Забронировать этот номер</h4>
+    <form method="post" action="{% url 'add_to_cart' %}">
+        {% csrf_token %}
+        <input type="hidden" name="room_id" value="{{ room.id }}">
+        <div class="row">
+            <div class="col-md-4">
+                <label>Дата заезда</label>
+                <input type="date" name="check_in_date" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+                <label>Дата выезда</label>
+                <input type="date" name="check_out_date" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+                <label>Количество гостей</label>
+                <input type="number" name="guests_count" value="2" min="1" max="10" class="form-control">
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-success">В корзину</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endif %}
+
+<h3 class="mt-4">Бронирования этого номера</h3>
 <ul>
     {% for booking in room.bookings.all|slice:":5" %}
     <li>{{ booking.check_in_date }} - {{ booking.check_out_date }} ({{ booking.guest.user.username }})</li>
@@ -40,8 +68,9 @@
     .button.delete {
         background-color: #dc3545;
     }
-    .button.delete:hover {
-        background-color: #c82333;
+    .cart-form {
+        border: 1px solid #ddd;
+        border-radius: 10px;
     }
 </style>
 {% endblock %}

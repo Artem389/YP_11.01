@@ -1,5 +1,50 @@
-{% extends 'base_form.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
-{{ block.super }}
+<div class="container" style="max-width: 800px;">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">{{ form_title }}</h3>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label fw-bold">
+                        {{ field.label }}
+                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ cancel_url }}" class="btn btn-secondary">Отмена</a>
+                    <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    select, textarea, input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+    }
+    select:focus, textarea:focus, input:focus {
+        border-color: #667eea;
+        outline: none;
+    }
+</style>
 {% endblock %}
