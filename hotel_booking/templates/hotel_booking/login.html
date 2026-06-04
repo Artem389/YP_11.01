@@ -1,0 +1,203 @@
+{% extends 'hotel_booking/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Вход в систему{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h3 class="mb-0">
+                        <i class="fas fa-sign-in-alt"></i> Вход в систему
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Имя пользователя</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                                <input type="text" name="username" id="username" class="form-control" 
+                                       placeholder="Введите имя пользователя" required autofocus>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <input type="password" name="password" id="password" class="form-control" 
+                                       placeholder="Введите пароль" required>
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="remember">
+                            <label class="form-check-label" for="remember">
+                                Запомнить меня
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt"></i> Войти
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <p class="mb-2">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+                                Забыли пароль?
+                            </a>
+                        </p>
+                        <p class="mb-0">
+                            Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Демо-аккаунты -->
+            <div class="card mt-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Демо-аккаунты для тестирования</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <div class="alert alert-success mb-0">
+                                <strong>Пользователь</strong><br>
+                                Логин: user<br>
+                                Пароль: user12345
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="alert alert-warning mb-0">
+                                <strong>Менеджер</strong><br>
+                                Логин: manager<br>
+                                Пароль: manager12345
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="alert alert-danger mb-0">
+                                <strong>Администратор</strong><br>
+                                Логин: admin<br>
+                                Пароль: admin12345
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно восстановления пароля -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Восстановление пароля</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Введите ваш email, и мы отправим инструкции по восстановлению пароля.</p>
+                <form id="forgotPasswordForm">
+                    <div class="mb-3">
+                        <label for="reset_email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="reset_email" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+    
+    .card-header {
+        border-radius: 15px 15px 0 0;
+    }
+    
+    .input-group-text {
+        background-color: #f8f9fa;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        transition: transform 0.3s;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .alert {
+        border-radius: 10px;
+    }
+</style>
+
+<script>
+    // Показать/скрыть пароль
+    document.getElementById('togglePassword')?.addEventListener('click', function() {
+        const password = document.getElementById('password');
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        this.querySelector('i').classList.toggle('fa-eye');
+        this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+    
+    // Обработка формы восстановления пароля
+    document.getElementById('forgotPasswordForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('reset_email').value;
+        alert(`Инструкции по восстановлению пароля отправлены на ${email}`);
+        bootstrap.Modal.getInstance(document.getElementById('forgotPasswordModal')).hide();
+    });
+    
+    // Автоматическое заполнение демо-аккаунтов
+    function fillDemoCredentials(username, password) {
+        document.getElementById('username').value = username;
+        document.getElementById('password').value = password;
+    }
+    
+    // Добавляем обработчики для демо-аккаунтов
+    document.querySelectorAll('.alert').forEach((alert, index) => {
+        alert.style.cursor = 'pointer';
+        alert.addEventListener('click', () => {
+            if (index === 0) fillDemoCredentials('user', 'user12345');
+            else if (index === 1) fillDemoCredentials('manager', 'manager12345');
+            else if (index === 2) fillDemoCredentials('admin', 'admin12345');
+        });
+    });
+</script>
+{% endblock %}

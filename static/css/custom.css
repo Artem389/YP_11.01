@@ -1,0 +1,24 @@
+.hotel-card {
+    transition: transform 0.3s;
+    margin-bottom: 20px;
+}
+
+.hotel-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.rating-stars {
+    color: #ffc107;
+}
+
+.booking-status {
+    font-weight: bold;
+}
+
+.avatar {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+}

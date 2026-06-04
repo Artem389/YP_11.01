@@ -1,0 +1,68 @@
+{% extends 'hotel_booking/base.html' %}
+
+{% block title %}Оплата бронирования{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Оплата бронирования #{{ booking.id }}</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Отель:</th>
+                            <td>{{ booking.room.hotel.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Номер:</th>
+                            <td>{{ booking.room.room_number }} ({{ booking.room.get_room_type_display }})</td>
+                        </tr>
+                        <tr>
+                            <th>Заезд:</th>
+                            <td>{{ booking.check_in|date:"d.m.Y" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Выезд:</th>
+                            <td>{{ booking.check_out|date:"d.m.Y" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Сумма к оплате:</th>
+                            <td><strong class="text-success h4">{{ booking.total_price }} ₽</strong></td>
+                        </tr>
+                    </table>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Выберите способ оплаты:</label>
+                            <select name="payment_method" class="form-select" required>
+                                <option value="">-- Выберите способ --</option>
+                                <option value="card">💳 Банковская карта</option>
+                                <option value="cash">💰 Наличные в отеле</option>
+                                <option value="online">🌐 Онлайн платеж</option>
+                            </select>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle"></i>
+                            <small>💡 Для демонстрации оплата проходит мгновенно.</small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-check-circle"></i> Оплатить {{ booking.total_price }} ₽
+                            </button>
+                            <a href="{% url 'my_bookings' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Отмена
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

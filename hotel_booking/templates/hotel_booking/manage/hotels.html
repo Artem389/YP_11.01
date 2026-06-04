@@ -1,0 +1,46 @@
+{% extends 'hotel_booking/base.html' %}
+
+{% block title %}Управление отелями{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Управление отелями</h1>
+        <a href="{% url 'hotel_create' %}" class="btn btn-primary">➕ Добавить отель</a>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th>Город</th>
+                    <th>Звезды</th>
+                    <th>Телефон</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hotel in hotels %}
+                <tr>
+                    <td>{{ hotel.id }}</td>
+                    <td>{{ hotel.name }}</td>
+                    <td>{{ hotel.city }}</td>
+                    <td>{% for i in "12345"|slice:hotel.stars %}★{% endfor %}</td>
+                    <td>{{ hotel.phone }}</td>
+                    <td>
+                        <a href="{% url 'hotel_edit' hotel.id %}" class="btn btn-sm btn-warning">✏️</a>
+                        <a href="{% url 'hotel_delete' hotel.id %}" class="btn btn-sm btn-danger">🗑️</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">Нет отелей</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

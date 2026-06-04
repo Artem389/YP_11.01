@@ -1,0 +1,137 @@
+{% extends 'hotel_booking/base.html' %}
+
+{% block title %}{{ hotel.name }}{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'hotel_list' %}">Отели</a></li>
+                <li class="breadcrumb-item active">{{ hotel.name }}</li>
+            </ol>
+        </nav>
+
+        <!-- Информация об отеле -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h1 class="mb-2">{{ hotel.name }}</h1>
+                        <div class="rating-stars mb-2">
+                            {% for i in "12345"|slice:hotel.stars %}
+                                <i class="fas fa-star text-warning"></i>
+                            {% endfor %}
+                            {% if avg_rating %}
+                                <span class="ms-2">({{ avg_rating|floatformat:1 }}/5 на основе {{ reviews.count }} отзывов)</span>
+                            {% endif %}
+                        </div>
+                        <p><i class="fas fa-map-marker-alt"></i> {{ hotel.address }}, {{ hotel.city }}</p>
+                        <p><i class="fas fa-phone"></i> {{ hotel.phone }} | <i
+                                class="fas fa-envelope"></i> {{ hotel.email }}</p>
+                        {% if hotel.website %}
+                            <p><i class="fas fa-globe"></i> <a href="{{ hotel.website }}"
+                                                               target="_blank">{{ hotel.website }}</a></p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="alert alert-info">
+                            <h3 class="mb-0">⭐ {{ hotel.stars }}</h3>
+                            <small>звезд</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Описание -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0">Описание отеля</h3>
+            </div>
+            <div class="card-body">
+                <p>{{ hotel.description|linebreaks }}</p>
+            </div>
+        </div>
+
+        <!-- Номера -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0">Доступные номера</h3>
+            </div>
+            <div class="card-body">
+                {% if rooms %}
+                    <div class="row">
+                        {% for room in rooms %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <h4>Номер {{ room.room_number }}</h4>
+                                            <span class="badge bg-info">{{ room.get_room_type_display }}</span>
+                                        </div>
+                                        <p><strong>Вместимость:</strong> {{ room.capacity }} чел.</p>
+                                        <p><strong>Удобства:</strong> {{ room.amenities|default:"Стандартный набор" }}
+                                        </p>
+                                        <p class="text-muted">{{ room.description|default:"Нет описания" }}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h4 class="text-primary">{{ room.price_per_night }} ₽ <small
+                                                    class="text-muted">/ ночь</small></h4>
+                                            <a href="{% url 'booking_create' room.id %}" class="btn btn-success">Забронировать</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">Нет доступных номеров</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Отзывы -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Отзывы гостей</h3>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'review_create' hotel.id %}" class="btn btn-primary">Оставить отзыв</a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if reviews %}
+                    {% for review in reviews %}
+                        <div class="border-bottom mb-3 pb-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>{{ review.user.get_full_name_display }}</strong>
+                                    <div class="rating-stars">
+                                        {% for i in "12345"|slice:review.rating %}
+                                            <i class="fas fa-star text-warning"></i>
+                                        {% endfor %}
+                                        {% for i in "12345"|slice:review.rating|length|add:"-5"|stringformat:"s"|slice:":" %}
+                                            <i class="far fa-star text-warning"></i>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <small class="text-muted">{{ review.created_at|date:"d.m.Y" }}</small>
+                                    {% if user == review.user or user.is_admin %}
+                                        <div class="mt-1">
+                                            <a href="{% url 'review_edit' review.id %}" class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit"></i> Редактировать
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <p class="mt-2">{{ review.comment }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">Пока нет отзывов. Будьте первым!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

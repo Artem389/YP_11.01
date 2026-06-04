@@ -1,0 +1,37 @@
+{% extends 'hotel_booking/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Бронирование номера{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Бронирование номера</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h5>Информация о номере:</h5>
+                        <p><strong>Отель:</strong> {{ room.hotel.name }}<br>
+                        <strong>Номер:</strong> {{ room.room_number }}<br>
+                        <strong>Тип:</strong> {{ room.get_room_type_display }}<br>
+                        <strong>Цена за ночь:</strong> {{ room.price_per_night }} ₽<br>
+                        <strong>Вместимость:</strong> {{ room.capacity }} чел.</p>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Забронировать</button>
+                            <a href="{% url 'hotel_detail' room.hotel.id %}" class="btn btn-secondary">Назад</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

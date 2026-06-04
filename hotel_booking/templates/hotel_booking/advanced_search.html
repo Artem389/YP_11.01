@@ -1,0 +1,241 @@
+{% extends 'hotel_booking/base.html' %}
+
+{% block title %}Расширенный поиск отелей{% endblock %}
+
+{% block extra_css %}
+<style>
+    .search-filters {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+    .price-slider {
+        width: 100%;
+    }
+    .hotel-card {
+        transition: transform 0.3s;
+        margin-bottom: 20px;
+    }
+    .hotel-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    .filter-section {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #dee2e6;
+    }
+    .filter-section h6 {
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+    .amenities-checkbox {
+        margin-bottom: 8px;
+    }
+    .rating-filter {
+        display: flex;
+        gap: 5px;
+        margin-top: 10px;
+    }
+    .rating-star {
+        cursor: pointer;
+        font-size: 24px;
+        color: #ffc107;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Расширенный поиск отелей</h1>
+    
+    <div class="search-filters">
+        <form method="get" id="searchForm">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Город</label>
+                    <input type="text" name="city" class="form-control" placeholder="Введите город" value="{{ request.GET.city }}">
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Звезды</label>
+                    <select name="stars" class="form-select">
+                        <option value="">Любые</option>
+                        {% for i in "54321" %}
+                        <option value="{{ i }}" {% if request.GET.stars == i %}selected{% endif %}>
+                            {% for j in "12345"|slice:i %}★{% endfor %}
+                            {% for j in "12345"|slice:i|length|add:"-5"|stringformat:"s"|slice:":" %}☆{% endfor %}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Мин. цена</label>
+                    <input type="number" name="min_price" class="form-control" placeholder="0" value="{{ request.GET.min_price }}">
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Макс. цена</label>
+                    <input type="number" name="max_price" class="form-control" placeholder="100000" value="{{ request.GET.max_price }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Гостей</label>
+                    <input type="number" name="guests" class="form-control" placeholder="1" value="{{ request.GET.guests|default:'1' }}" min="1">
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Дата заезда</label>
+                    <input type="date" name="check_in" class="form-control" value="{{ request.GET.check_in }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Дата выезда</label>
+                    <input type="date" name="check_out" class="form-control" value="{{ request.GET.check_out }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Удобства</label>
+                    <select name="amenities" class="form-select">
+                        <option value="">Все</option>
+                        <option value="wifi" {% if request.GET.amenities == 'wifi' %}selected{% endif %}>Wi-Fi</option>
+                        <option value="parking" {% if request.GET.amenities == 'parking' %}selected{% endif %}>Парковка</option>
+                        <option value="pool" {% if request.GET.amenities == 'pool' %}selected{% endif %}>Бассейн</option>
+                        <option value="spa" {% if request.GET.amenities == 'spa' %}selected{% endif %}>СПА-центр</option>
+                        <option value="restaurant" {% if request.GET.amenities == 'restaurant' %}selected{% endif %}>Ресторан</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> Найти отели
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4>Найдено отелей: {{ hotels|length }}</h4>
+                <div class="sort-buttons">
+                    <label class="me-2">Сортировать:</label>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-secondary btn-sm" onclick="sortBy('price')">
+                            <i class="fas fa-sort-amount-down"></i> По цене
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="sortBy('stars')">
+                            <i class="fas fa-star"></i> По звездам
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="sortBy('name')">
+                            <i class="fas fa-sort-alpha-down"></i> По названию
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row" id="hotelsContainer">
+        {% if hotels %}
+            {% for hotel in hotels %}
+            <div class="col-md-6 col-lg-4 hotel-item" 
+                 data-price="{% if hotel.min_price %}{{ hotel.min_price }}{% else %}0{% endif %}" 
+                 data-stars="{{ hotel.stars }}"
+                 data-name="{{ hotel.name|lower }}">
+                <div class="card hotel-card h-100">
+                    {% if hotel.image %}
+                        <img src="{{ hotel.image.url }}" class="card-img-top" alt="{{ hotel.name }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-hotel fa-4x"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">{{ hotel.name }}</h5>
+                            <div class="rating-stars">
+                                {% for i in "12345"|slice:hotel.stars %}
+                                    <i class="fas fa-star text-warning"></i>
+                                {% endfor %}
+                                {% for i in "12345"|slice:hotel.stars|length|add:"-5"|stringformat:"s"|slice:":" %}
+                                    <i class="far fa-star text-warning"></i>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <p class="card-text text-muted">
+                            <i class="fas fa-map-marker-alt"></i> {{ hotel.city }}, {{ hotel.address|truncatewords:8 }}
+                        </p>
+                        <p class="card-text">{{ hotel.description|truncatewords:20 }}</p>
+                        
+                        {% if hotel.rooms.exists %}
+                            <div class="alert alert-info py-1 px-2 mb-2">
+                                <small><i class="fas fa-bed"></i> {{ hotel.rooms.count }} номеров</small>
+                                <small class="ms-2"><i class="fas fa-dollar-sign"></i> от {{ hotel.min_price|default:hotel.rooms.first.price_per_night }} ₽/ночь</small>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <i class="fas fa-phone"></i> {{ hotel.phone }}
+                            </div>
+                            <a href="{% url 'hotel_detail' hotel.id %}" class="btn btn-primary btn-sm">
+                                Выбрать номер <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle fa-2x mb-2"></i>
+                    <h5>Отели не найдены</h5>
+                    <p>Попробуйте изменить параметры поиска</p>
+                    <button class="btn btn-primary" onclick="resetFilters()">Сбросить фильтры</button>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function sortBy(criteria) {
+    const container = document.getElementById('hotelsContainer');
+    const items = Array.from(container.getElementsByClassName('hotel-item'));
+    
+    items.sort((a, b) => {
+        let aVal, bVal;
+        
+        if (criteria === 'price') {
+            aVal = parseFloat(a.dataset.price);
+            bVal = parseFloat(b.dataset.price);
+        } else if (criteria === 'stars') {
+            aVal = parseInt(a.dataset.stars);
+            bVal = parseInt(b.dataset.stars);
+            return bVal - aVal;
+        } else if (criteria === 'name') {
+            aVal = a.dataset.name;
+            bVal = b.dataset.name;
+            return aVal.localeCompare(bVal);
+        }
+        
+        return aVal - bVal;
+    });
+    
+    items.forEach(item => container.appendChild(item));
+}
+
+function resetFilters() {
+    window.location.href = "{% url 'advanced_search' %}";
+}
+
+// Автоматическое применение сортировки при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sort = urlParams.get('sort');
+    if (sort) {
+        sortBy(sort);
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'hotel_booking/base.html' %}
+
+{% block title %}Удаление платежа{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">Подтверждение удаления</h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Удалить платеж #{{ payment.id }} на сумму {{ payment.amount }} ₽?</p>
+                    <p><strong>Бронирование:</strong> #{{ payment.booking.id }}</p>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'manage_payments' %}" class="btn btn-secondary">Отмена</a>
+                            <button type="submit" class="btn btn-danger">Да, удалить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'hotel_booking/base.html' %}
+
+{% block title %}Мои бронирования{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="mb-4">Мои бронирования</h1>
+
+        {% if bookings %}
+            <div class="row">
+                {% for booking in bookings %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header
+                        {% if booking.status == 'confirmed' %}bg-success
+                        {% elif booking.status == 'pending' %}bg-warning
+                        {% elif booking.status == 'cancelled' %}bg-danger
+                        {% else %}bg-secondary{% endif %} text-white">
+                                <h5 class="mb-0">Бронирование #{{ booking.id }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ booking.room.hotel.name }}</h5>
+                                <p class="card-text">
+                                    <strong>Номер:</strong> {{ booking.room.room_number }}<br>
+                                    <strong>Тип номера:</strong> {{ booking.room.get_room_type_display }}<br>
+                                    <strong>Заезд:</strong> {{ booking.check_in|date:"d.m.Y" }}<br>
+                                    <strong>Выезд:</strong> {{ booking.check_out|date:"d.m.Y" }}<br>
+                                    <strong>Гостей:</strong> {{ booking.guests_count }}<br>
+                                    <strong>Стоимость:</strong> {{ booking.total_price }} ₽<br>
+                                    <strong>Статус:</strong>
+                                    <span class="badge
+                                {% if booking.status == 'confirmed' %}bg-success
+                                {% elif booking.status == 'pending' %}bg-warning
+                                {% elif booking.status == 'cancelled' %}bg-danger
+                                {% else %}bg-secondary{% endif %}">
+                                {{ booking.get_status_display }}
+                            </span>
+                                </p>
+
+                                {% if booking.special_requests %}
+                                    <div class="alert alert-info">
+                                        <strong>Особые пожелания:</strong> {{ booking.special_requests }}
+                                    </div>
+                                {% endif %}
+
+                                {% if booking.services.exists %}
+                                    <div class="mt-2">
+                                        <strong>Дополнительные услуги:</strong>
+                                        <ul class="list-group list-group-flush mt-2">
+                                            {% for bs in booking.services.all %}
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    {{ bs.service.name }}
+                                                    <span class="badge bg-primary rounded-pill">{{ bs.quantity }} x {{ bs.price_at_time }} ₽</span>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="card-footer">
+                                <div class="btn-group w-100" role="group">
+                                    {% if booking.status == 'pending' %}
+                                        {% if not booking.payment_rel %}
+                                            <a href="{% url 'add_booking_service' booking.id %}"
+                                               class="btn btn-sm btn-info">
+                                                <i class="fas fa-plus"></i> Добавить услуги
+                                            </a>
+                                            <a href="{% url 'payment_create' booking.id %}"
+                                               class="btn btn-sm btn-success">
+                                                <i class="fas fa-credit-card"></i> Оплатить
+                                            </a>
+                                        {% else %}
+                                            <button class="btn btn-sm btn-secondary" disabled>
+                                                <i class="fas fa-check"></i> Оплачено ({{ booking.payment_rel.status }})
+                                            </button>
+                                        {% endif %}
+                                    {% elif booking.status == 'confirmed' %}
+                                        <button class="btn btn-sm btn-info" disabled>
+                                            <i class="fas fa-check-circle"></i> Подтверждено
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <p>У вас пока нет бронирований. <a href="{% url 'hotel_list' %}">Перейти к выбору отеля</a></p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

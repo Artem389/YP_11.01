@@ -1,0 +1,334 @@
+{% extends 'hotel_booking/base.html' %}
+{% load static %}
+
+{% block title %}Главная - Бронирование отелей{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section bg-primary text-white py-5 mb-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Найдите идеальный отель для вашего отдыха</h1>
+                <p class="lead mb-4">Более 1000 отелей по всему миру. Лучшие цены и гарантия качества.</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <a href="{% url 'hotel_list' %}" class="btn btn-light btn-lg px-4 me-md-2">
+                        <i class="fas fa-search"></i> Поиск отелей
+                    </a>
+                    {% if not user.is_authenticated %}
+                    <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-user-plus"></i> Регистрация
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <img src="https://via.placeholder.com/500x400/ffffff/667eea?text=Hotel+Booking" alt="Hotel" class="img-fluid rounded shadow">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Быстрый поиск -->
+<div class="container mb-5">
+    <div class="card shadow-lg">
+        <div class="card-body p-4">
+            <h3 class="text-center mb-4">Быстрый поиск отелей</h3>
+            <form method="get" action="{% url 'hotel_list' %}">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Город</label>
+                        <input type="text" name="city" class="form-control" placeholder="Введите город">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Дата заезда</label>
+                        <input type="date" name="check_in" class="form-control">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Дата выезда</label>
+                        <input type="date" name="check_out" class="form-control">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Гости</label>
+                        <input type="number" name="guests" class="form-control" value="2" min="1">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-search"></i> Найти отели
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Популярные направления -->
+<div class="container mb-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Популярные направления</h2>
+        <p class="text-muted">Самые востребованные города для путешествий</p>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-city fa-3x text-primary mb-3"></i>
+                    <h5>Москва</h5>
+                    <p class="text-muted">156 отелей</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-landmark fa-3x text-primary mb-3"></i>
+                    <h5>Санкт-Петербург</h5>
+                    <p class="text-muted">98 отелей</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-umbrella-beach fa-3x text-primary mb-3"></i>
+                    <h5>Сочи</h5>
+                    <p class="text-muted">124 отеля</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-mountain fa-3x text-primary mb-3"></i>
+                    <h5>Казань</h5>
+                    <p class="text-muted">67 отелей</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Рекомендуемые отели -->
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">Рекомендуемые отели</h2>
+        <a href="{% url 'hotel_list' %}" class="btn btn-outline-primary">Смотреть все <i class="fas fa-arrow-right"></i></a>
+    </div>
+    
+    <div class="row">
+        {% if hotels %}
+            {% for hotel in hotels %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 hotel-card shadow-sm">
+                    {% if hotel.image %}
+                        <img src="{{ hotel.image.url }}" class="card-img-top" alt="{{ hotel.name }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-hotel fa-4x"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">{{ hotel.name }}</h5>
+                            <div class="rating-stars">
+                                {% for i in "12345"|slice:hotel.stars %}
+                                    <i class="fas fa-star text-warning"></i>
+                                {% endfor %}
+                                {% for i in "12345"|slice:hotel.stars|length|add:"-5"|stringformat:"s"|slice:":" %}
+                                    <i class="far fa-star text-warning"></i>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <p class="card-text text-muted small">
+                            <i class="fas fa-map-marker-alt"></i> {{ hotel.city }}, {{ hotel.address|truncatewords:10 }}
+                        </p>
+                        <p class="card-text">{{ hotel.description|truncatewords:20 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <i class="fas fa-phone"></i> {{ hotel.phone }}
+                            </div>
+                            <a href="{% url 'hotel_detail' hotel.id %}" class="btn btn-primary btn-sm">
+                                Подробнее <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle"></i> Скоро здесь появятся отели
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Преимущества -->
+<div class="bg-light py-5 mb-5">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Почему выбирают нас</h2>
+            <p class="text-muted">Мы заботимся о каждом нашем клиенте</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3 text-center">
+                <div class="feature-card">
+                    <div class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-tags fa-2x"></i>
+                    </div>
+                    <h5>Лучшие цены</h5>
+                    <p class="text-muted">Гарантируем самые низкие цены на рынке</p>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="feature-card">
+                    <div class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-headset fa-2x"></i>
+                    </div>
+                    <h5>Поддержка 24/7</h5>
+                    <p class="text-muted">Круглосуточная поддержка клиентов</p>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="feature-card">
+                    <div class="feature-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-lock fa-2x"></i>
+                    </div>
+                    <h5>Безопасная оплата</h5>
+                    <p class="text-muted">Защита ваших платежей и данных</p>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="feature-card">
+                    <div class="feature-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-smile fa-2x"></i>
+                    </div>
+                    <h5>Довольные клиенты</h5>
+                    <p class="text-muted">Более 10000 довольных путешественников</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Отзывы -->
+<div class="container mb-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Что говорят наши клиенты</h2>
+        <p class="text-muted">Реальные отзывы о нашем сервисе</p>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="rating-stars mb-2">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                    </div>
+                    <p class="card-text">"Отличный сервис! Забронировал отель за 5 минут. Все четко и понятно. Обязательно воспользуюсь еще раз!"</p>
+                    <div class="d-flex align-items-center mt-3">
+                        <div class="bg-secondary rounded-circle me-2" style="width: 40px; height: 40px;"></div>
+                        <div>
+                            <h6 class="mb-0">Алексей Иванов</h6>
+                            <small class="text-muted">Москва</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="rating-stars mb-2">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                    </div>
+                    <p class="card-text">"Очень удобный сайт. Нашел отель по отличной цене. Спасибо за быструю поддержку!"</p>
+                    <div class="d-flex align-items-center mt-3">
+                        <div class="bg-secondary rounded-circle me-2" style="width: 40px; height: 40px;"></div>
+                        <div>
+                            <h6 class="mb-0">Мария Петрова</h6>
+                            <small class="text-muted">Санкт-Петербург</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="rating-stars mb-2">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="far fa-star text-warning"></i>
+                    </div>
+                    <p class="card-text">"Хороший сервис, много вариантов выбора. Единственное - хотелось бы больше фильтров поиска."</p>
+                    <div class="d-flex align-items-center mt-3">
+                        <div class="bg-secondary rounded-circle me-2" style="width: 40px; height: 40px;"></div>
+                        <div>
+                            <h6 class="mb-0">Дмитрий Сидоров</h6>
+                            <small class="text-muted">Казань</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Подписка на новости -->
+<div class="bg-primary text-white py-5">
+    <div class="container text-center">
+        <h3 class="mb-3">Подпишитесь на наши новости</h3>
+        <p class="mb-4">Получайте лучшие предложения и скидки первыми!</p>
+        <form class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="email" class="form-control" placeholder="Ваш email" required>
+                    <button class="btn btn-light" type="submit">Подписаться</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .hotel-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .hotel-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .feature-icon {
+        transition: transform 0.3s ease;
+    }
+    
+    .feature-card:hover .feature-icon {
+        transform: scale(1.1);
+    }
+    
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    @media (max-width: 768px) {
+        .hero-section h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}

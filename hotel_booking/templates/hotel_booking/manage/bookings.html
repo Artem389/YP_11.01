@@ -1,0 +1,102 @@
+{% extends 'hotel_booking/base.html' %}
+
+{% block title %}Управление бронированиями{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Управление бронированиями</h1>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-auto">
+                    <label for="status" class="visually-hidden">Статус</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="">Все статусы</option>
+                        <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Ожидает</option>
+                        <option value="confirmed" {% if request.GET.status == 'confirmed' %}selected{% endif %}>Подтверждено</option>
+                        <option value="cancelled" {% if request.GET.status == 'cancelled' %}selected{% endif %}>Отменено</option>
+                        <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Завершено</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Фильтр</button>
+                    <a href="{% url 'manage_bookings' %}" class="btn btn-secondary">Сбросить</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Пользователь</th>
+                    <th>Контактные данные</th>
+                    <th>Отель</th>
+                    <th>Номер</th>
+                    <th>Даты</th>
+                    <th>Сумма</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>#{{ booking.id }}</td>
+                    <td>
+                        <strong>{{ booking.user.get_full_name_display }}</strong><br>
+                        <small class="text-muted">@{{ booking.user.username }}</small>
+                    </td>
+                    <td>
+                        <small>
+                            {{ booking.user.email }}<br>
+                            {{ booking.user.phone|default:"-" }}
+                        </small>
+                    </td>
+                    <td>{{ booking.room.hotel.name }}</td>
+                    <td>{{ booking.room.room_number }}<br><small>{{ booking.room.get_room_type_display }}</small></td>
+                    <td>
+                        {{ booking.check_in|date:"d.m.Y" }}<br>
+                        <i class="fas fa-arrow-down"></i><br>
+                        {{ booking.check_out|date:"d.m.Y" }}
+                    </td>
+                    <td>{{ booking.total_price }} ₽</td>
+                    <td>
+                        <span class="badge {% if booking.status == 'confirmed' %}bg-success{% elif booking.status == 'pending' %}bg-warning{% elif booking.status == 'cancelled' %}bg-danger{% else %}bg-secondary{% endif %}">
+                            {{ booking.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="btn-group-vertical" role="group">
+                            <a href="{% url 'booking_edit' booking.id %}" class="btn btn-sm btn-warning mb-1">
+                                <i class="fas fa-edit"></i> Редактировать
+                            </a>
+                            {% if booking.status == 'pending' %}
+                                <a href="{% url 'booking_confirm' booking.id %}" class="btn btn-sm btn-success mb-1" onclick="return confirm('Подтвердить бронирование?')">
+                                    <i class="fas fa-check"></i> Подтвердить
+                                </a>
+                                <a href="{% url 'booking_cancel' booking.id %}" class="btn btn-sm btn-danger mb-1" onclick="return confirm('Отменить бронирование?')">
+                                    <i class="fas fa-times"></i> Отменить
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'booking_delete' booking.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Удалить бронирование?')">
+                                <i class="fas fa-trash"></i> Удалить
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center">Нет бронирований</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'hotel_booking/base.html' %}
+
+{% block title %}Удаление отеля{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">Подтверждение удаления</h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Вы действительно хотите удалить отель <strong>"{{ hotel.name }}"</strong>?</p>
+                    <p class="text-danger">Внимание! Это действие также удалит все связанные номера и бронирования.</p>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'manage_hotels' %}" class="btn btn-secondary">Отмена</a>
+                            <button type="submit" class="btn btn-danger">Да, удалить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

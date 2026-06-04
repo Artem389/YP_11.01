@@ -1,0 +1,86 @@
+{% extends 'hotel_booking/base.html' %}
+
+{% block title %}Список отелей{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Наши отели</h1>
+        <a href="{% url 'advanced_search' %}" class="btn btn-outline-primary">
+            <i class="fas fa-search-plus"></i> Расширенный поиск
+        </a>
+    </div>
+    
+    <div class="row">
+        <!-- Сайдбар с фильтрами -->
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Фильтры</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get">
+                        <div class="mb-3">
+                            <label class="form-label">Поиск</label>
+                            <input type="text" name="q" class="form-control" placeholder="Название отеля" value="{{ request.GET.q }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Город</label>
+                            <input type="text" name="city" class="form-control" placeholder="Город" value="{{ request.GET.city }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Звезды</label>
+                            <select name="stars" class="form-select">
+                                <option value="">Любые</option>
+                                <option value="5" {% if request.GET.stars == '5' %}selected{% endif %}>★★★★★ (5)</option>
+                                <option value="4" {% if request.GET.stars == '4' %}selected{% endif %}>★★★★☆ (4+)</option>
+                                <option value="3" {% if request.GET.stars == '3' %}selected{% endif %}>★★★☆☆ (3+)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Применить фильтры</button>
+                        <a href="{% url 'hotel_list' %}" class="btn btn-secondary w-100 mt-2">Сбросить</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Список отелей -->
+        <div class="col-md-9">
+            {% if hotels %}
+                <div class="row">
+                    {% for hotel in hotels %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title">{{ hotel.name }}</h5>
+                                    <div class="rating-stars">
+                                        {% for i in "12345"|slice:hotel.stars %}
+                                            <i class="fas fa-star text-warning"></i>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <p class="text-muted">
+                                    <i class="fas fa-map-marker-alt"></i> {{ hotel.city }}, {{ hotel.address|truncatewords:10 }}
+                                </p>
+                                <p class="card-text">{{ hotel.description|truncatewords:30 }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-phone"></i> {{ hotel.phone }}
+                                    </div>
+                                    <a href="{% url 'hotel_detail' hotel.id %}" class="btn btn-primary">Смотреть номера</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Отели не найдены. Попробуйте изменить параметры поиска.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
