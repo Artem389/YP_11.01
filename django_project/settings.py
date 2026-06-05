@@ -10,7 +10,22 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-your-secret-key-here')
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '0.0.0.0',
+    'web',  # Имя сервиса в docker-compose
+    'nginx',  # Имя nginx контейнера
+    '*',  # Временно для отладки (уберите в продакшене)
+]
+
+# Дополнительные настройки для Docker
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost',
+    'http://127.0.0.1',
+    'http://0.0.0.0',
+    'http://web:8000',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -82,6 +97,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+
 LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
@@ -90,6 +107,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
